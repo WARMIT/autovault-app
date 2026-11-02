@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/car.dart';
+import '../models/seller.dart';
 import '../models/chat_message.dart';
 import '../state/car_store.dart';
 import '../theme/app_colors.dart';

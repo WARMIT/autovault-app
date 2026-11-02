@@ -43,13 +43,11 @@ class BrandSelector extends StatelessWidget {
                         ? AppColors.primary
                         : (isDark ? AppColors.darkCard : Colors.white),
                     borderRadius: BorderRadius.circular(24),
-                    border: Border.pad(
-                      BorderSide(
-                        color: isSelected
-                            ? AppColors.primary
-                            : (isDark ? AppColors.darkBorder : AppColors.lightBorder),
-                        width: 1.2,
-                      ),
+                    border: Border.all(
+                      color: isSelected
+                          ? AppColors.primary
+                          : (isDark ? AppColors.darkBorder : AppColors.lightBorder),
+                      width: 1.2,
                     ),
                     boxShadow: isSelected
                         ? [

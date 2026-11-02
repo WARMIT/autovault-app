@@ -32,7 +32,7 @@ jobs:
         run: flutter pub get
 
       - name: 🔨 Build Universal Release APK
-        run: flutter build apk --release --split-per-abi=false
+        run: flutter build apk --release
 
       - name: 🏷️ Prepare APK
         run: |

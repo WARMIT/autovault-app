@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>AutoVault - Premium Car Marketplace (Interactive Demo)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #FF5E14;
+      --primary-light: #FF8533;
+      --accent-cyan: #00E5FF;
+      --accent-gold: #FFB800;
+      --dark-bg: #0B0E14;
+      --dark-surface: #141923;
+      --dark-card: #1B2230;
+      --dark-border: #283347;
+      --text-primary: #F8FAFC;
+      --text-secondary: #94A3B8;
+      --text-muted: #64748B;
+      --success: #10B981;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background: #06080C;
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px 10px;
+    }
+
+    /* Device Showcase Wrapper */
+    .device-shell {
+      width: 100%;
+      max-width: 440px;
+      height: 900px;
+      background: var(--dark-bg);
+      border-radius: 44px;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9), 0 0 0 10px #1E2533, 0 0 40px rgba(255, 94, 20, 0.15);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    /* Dynamic Island / Notch */
+    .notch {
+      width: 120px;
+      height: 24px;
+      background: #000;
+      border-radius: 20px;
+      margin: 12px auto 0 auto;
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 12px;
+    }
+    .notch-camera {
+      width: 10px;
+      height: 10px;
+      background: #111;
+      border-radius: 50%;
+      border: 1px solid #222;
+    }
+
+    /* Screen Views */
+    .screen-container {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding-bottom: 90px;
+      scroll-behavior: smooth;
+    }
+    .screen-container::-webkit-scrollbar {
+      display: none;
+    }
+
+    /* Top Bar */
+    .top-header {
+      padding: 12px 20px 8px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .loc-sub {
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 1.2px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .app-brand {
+      font-size: 22px;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+      margin-top: 2px;
+    }
+    .app-brand span {
+      color: var(--primary);
+    }
+    .badge-pro {
+      background: rgba(255, 94, 20, 0.15);
+      color: var(--primary);
+      font-size: 10px;
+      font-weight: 800;
+      padding: 2px 6px;
+      border-radius: 6px;
+      margin-left: 6px;
+    }
+
+    /* Search Bar */
+    .search-pill {
+      margin: 8px 20px 14px 20px;
+      background: var(--dark-card);
+      border: 1px solid var(--dark-border);
+      border-radius: 16px;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--text-muted);
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .search-pill:hover {
+      border-color: var(--primary);
+    }
+
+    /* Hero Spotlight Carousel */
+    .hero-banner {
+      margin: 0 20px 16px 20px;
+      height: 200px;
+      border-radius: 22px;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      border: 1px solid var(--dark-border);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    }
+    .hero-banner img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+    .hero-banner:hover img {
+      transform: scale(1.04);
+    }
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.85) 100%);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .badge-spotlight {
+      align-self: flex-start;
+      background: var(--primary);
+      color: white;
+      font-size: 10px;
+      font-weight: 900;
+      padding: 4px 8px;
+      border-radius: 8px;
+      letter-spacing: 0.5px;
+    }
+    .hero-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+    .hero-title {
+      font-size: 18px;
+      font-weight: 900;
+      color: white;
+    }
+    .hero-sub {
+      font-size: 11px;
+      color: var(--accent-cyan);
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+    .hero-price {
+      background: white;
+      color: black;
+      padding: 6px 12px;
+      border-radius: 12px;
+      font-weight: 900;
+      font-size: 15px;
+      text-align: right;
+    }
+    .hero-price small {
+      display: block;
+      font-size: 9px;
+      color: #666;
+      font-weight: 700;
+    }
+
+    /* Brands Scroll */
+    .section-title {
+      padding: 0 20px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 16px;
+      font-weight: 800;
+    }
+    .brands-row {
+      display: flex;
+      gap: 10px;
+      padding: 0 20px 16px 20px;
+      overflow-x: auto;
+    }
+    .brands-row::-webkit-scrollbar { display: none; }
+    .brand-pill {
+      background: var(--dark-card);
+      border: 1px solid var(--dark-border);
+      border-radius: 20px;
+      padding: 8px 14px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .brand-pill.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: white;
+      box-shadow: 0 4px 12px rgba(255, 94, 20, 0.4);
+    }
+
+    /* Car Cards List */
+    .card-list {
+      padding: 0 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .car-card {
+      background: var(--dark-card);
+      border: 1px solid var(--dark-border);
+      border-radius: 20px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+    .car-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(255, 94, 20, 0.5);
+    }
+    .card-img-wrap {
+      height: 180px;
+      position: relative;
+    }
+    .card-img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .fav-btn {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: rgba(0,0,0,0.65);
+      border: 1px solid rgba(255,255,255,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      cursor: pointer;
+      transition: transform 0.15s;
+    }
+    .fav-btn.active {
+      color: #FF3366;
+    }
+    .telemetry-row {
+      position: absolute;
+      bottom: 10px;
+      left: 12px;
+      display: flex;
+      gap: 6px;
+    }
+    .tel-chip {
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(4px);
+      border: 1px solid rgba(255,255,255,0.2);
+      padding: 4px 8px;
+      border-radius: 8px;
+      font-size: 10px;
+      font-weight: 800;
+      color: white;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .tel-chip span {
+      color: var(--primary);
+    }
+    .card-body {
+      padding: 14px 16px;
+    }
+    .card-make {
+      font-size: 10px;
+      font-weight: 800;
+      color: var(--primary);
+      letter-spacing: 1.1px;
+    }
+    .card-title {
+      font-size: 16px;
+      font-weight: 800;
+      margin: 2px 0 8px 0;
+    }
+    .card-specs-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .card-spec-pill {
+      background: var(--dark-surface);
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+    .card-footer {
+      border-top: 1px solid var(--dark-border);
+      padding-top: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+    .price-num {
+      font-size: 19px;
+      font-weight: 900;
+      color: white;
+    }
+    .price-emi {
+      font-size: 11px;
+      color: var(--primary);
+      font-weight: 700;
+    }
+
+    /* Bottom Navigation Bar */
+    .bottom-nav {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 78px;
+      background: var(--dark-surface);
+      border-top: 1px solid var(--dark-border);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding-bottom: 12px;
+      z-index: 40;
+    }
+    .nav-tab {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      color: var(--text-muted);
+      font-size: 10px;
+      font-weight: 700;
+      cursor: pointer;
+      position: relative;
+    }
+    .nav-tab.active {
+      color: var(--primary);
+    }
+    .nav-tab svg {
+      width: 22px;
+      height: 22px;
+      fill: currentColor;
+    }
+    .nav-center-btn {
+      width: 44px;
+      height: 44px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      box-shadow: 0 4px 14px rgba(255, 94, 20, 0.4);
+      margin-top: -14px;
+    }
+
+    /* Modals & Dialogs */
+    .modal-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.75);
+      backdrop-filter: blur(5px);
+      z-index: 60;
+      display: none;
+      align-items: flex-end;
+    }
+    .modal-overlay.active {
+      display: flex;
+    }
+    .modal-sheet {
+      width: 100%;
+      max-height: 85%;
+      background: var(--dark-surface);
+      border-top-left-radius: 28px;
+      border-top-right-radius: 28px;
+      border-top: 1px solid var(--dark-border);
+      padding: 20px;
+      overflow-y: auto;
+      animation: slideUp 0.25s ease-out;
+    }
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+    .modal-handle {
+      width: 40px;
+      height: 4px;
+      background: var(--dark-border);
+      border-radius: 4px;
+      margin: 0 auto 16px auto;
+    }
+    .modal-btn {
+      width: 100%;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 16px;
+      padding: 16px;
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+      margin-top: 16px;
+    }
+    .slider-row {
+      margin: 16px 0;
+    }
+    .slider-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    input[type=range] {
+      width: 100%;
+      accent-color: var(--primary);
+    }
+
+    /* Badge Counter */
+    .nav-badge {
+      position: absolute;
+      top: -3px;
+      right: 4px;
+      background: #FF3366;
+      color: white;
+      font-size: 9px;
+      font-weight: 900;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="device-shell">
+    <!-- Top Notch -->
+    <div class="notch">
+      <div style="font-size: 11px; font-weight: 800; color: white;">9:41</div>
+      <div class="notch-camera"></div>
+      <div style="font-size: 10px; color: white;">5G 100%</div>
+    </div>
+
+    <!-- Active Screen -->
+    <div class="screen-container" id="screenContainer">
+      <!-- Top Header -->
+      <div class="top-header">
+        <div>
+          <div class="loc-sub">📍 BEVERLY HILLS, CA ▾</div>
+          <div class="app-brand">Auto<span>Vault</span> <span class="badge-pro">PRO</span></div>
+        </div>
+        <div style="display: flex; gap: 8px;">
+          <div style="width: 38px; height: 38px; border-radius: 50%; background: var(--dark-card); border: 1px solid var(--dark-border); display: flex; align-items: center; justify-content: center; cursor: pointer;">
+            🔔
+          </div>
+        </div>
+      </div>
+
+      <!-- Search Trigger -->
+      <div class="search-pill" onclick="switchTab('search')">
+        <span>🔍</span>
+        <span>Search Porsche, Tesla, AMG, V8, Electric...</span>
+      </div>
+
+      <!-- Spotlight Hero Banner -->
+      <div class="hero-banner" onclick="openDetails(0)">
+        <img src="https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?auto=format&fit=crop&w=1200&q=80" alt="Porsche GT3 RS">
+        <div class="hero-overlay">
+          <div class="badge-spotlight">⭐ FEATURED SPOTLIGHT</div>
+          <div class="hero-content">
+            <div>
+              <div class="hero-sub">2024 PORSCHE</div>
+              <div class="hero-title">911 GT3 RS (992)</div>
+              <div style="font-size: 11px; color: rgba(255,255,255,0.7); margin-top: 2px;">518 HP • 0-60 in 3.0s • Weissach</div>
+            </div>
+            <div class="hero-price">
+              $289,900
+              <small>$3,450/mo</small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Marques Row -->
+      <div class="section-title">
+        <span>Top Marques</span>
+        <span style="font-size: 12px; color: var(--primary); cursor: pointer;" onclick="filterBrand('All')">View All</span>
+      </div>
+      <div class="brands-row">
+        <div class="brand-pill active" onclick="filterBrand('All', this)">🌟 All Makes</div>
+        <div class="brand-pill" onclick="filterBrand('Porsche', this)">🏎️ Porsche</div>
+        <div class="brand-pill" onclick="filterBrand('Tesla', this)">⚡ Tesla</div>
+        <div class="brand-pill" onclick="filterBrand('Mercedes-Benz', this)">⭐ Mercedes</div>
+        <div class="brand-pill" onclick="filterBrand('BMW', this)">🏁 BMW</div>
+        <div class="brand-pill" onclick="filterBrand('Audi', this)">⭕ Audi</div>
+        <div class="brand-pill" onclick="filterBrand('Lamborghini', this)">🐂 Lamborghini</div>
+      </div>
+
+      <!-- Feed Section -->
+      <div class="section-title">
+        <span>Verified Inventory</span>
+        <span style="font-size: 12px; color: var(--text-muted);" id="carCountLabel">8 vehicles</span>
+      </div>
+
+      <div class="card-list" id="carsList">
+        <!-- Rendered dynamically -->
+      </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+      <div class="nav-tab active" id="tabExplore" onclick="switchTab('explore')">
+        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.5l-2.5-5.5L14 8.5l-2.5 5.5z"/></svg>
+        <span>Explore</span>
+      </div>
+      <div class="nav-tab" id="tabSearch" onclick="switchTab('search')">
+        <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+        <span>Search</span>
+      </div>
+      <div class="nav-tab" onclick="openSellModal()">
+        <div class="nav-center-btn">
+          <svg style="width: 24px; height: 24px;" viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+        </div>
+        <span>Sell Car</span>
+      </div>
+      <div class="nav-tab" id="tabSaved" onclick="switchTab('saved')">
+        <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+        <div class="nav-badge" id="favBadge">2</div>
+        <span>Garage</span>
+      </div>
+      <div class="nav-tab" id="tabProfile" onclick="switchTab('profile')">
+        <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+        <span>Profile</span>
+      </div>
+    </div>
+
+    <!-- Loan / Financing Modal -->
+    <div class="modal-overlay" id="emiModal">
+      <div class="modal-sheet">
+        <div class="modal-handle"></div>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+          <h3 style="font-size: 18px; font-weight: 800;">Finance & EMI Calculator</h3>
+          <span style="cursor: pointer; font-size: 20px;" onclick="closeModal('emiModal')">✕</span>
+        </div>
+        <div style="background: #111622; padding: 16px; border-radius: 18px; border: 1px solid var(--primary); text-align: center; margin-bottom: 16px;">
+          <div style="font-size: 11px; color: var(--primary); font-weight: 800;">ESTIMATED MONTHLY PAYMENT</div>
+          <div id="emiResult" style="font-size: 32px; font-weight: 900; margin: 4px 0;">$3,450/mo</div>
+          <div id="emiSubtitle" style="font-size: 12px; color: var(--text-muted);">60 months loan @ 5.9% APR</div>
+        </div>
+
+        <div class="slider-row">
+          <div class="slider-label">
+            <span>Down Payment (<span id="downVal">15</span>%)</span>
+            <span style="color: var(--primary); font-weight: 800;" id="downAmt">$43,485</span>
+          </div>
+          <input type="range" id="downSlider" min="5" max="50" value="15" oninput="updateEmi()">
+        </div>
+
+        <div class="slider-row">
+          <div class="slider-label">
+            <span>Loan Duration</span>
+            <span style="color: var(--accent-cyan); font-weight: 800;" id="termVal">60 Months</span>
+          </div>
+          <input type="range" id="termSlider" min="24" max="72" step="12" value="60" oninput="updateEmi()">
+        </div>
+
+        <button class="modal-btn" onclick="alert('Instant Pre-Approval Application Submitted!'); closeModal('emiModal');">Apply for Instant Pre-Approval</button>
+      </div>
+    </div>
+
+    <!-- Test Drive Booking Modal -->
+    <div class="modal-overlay" id="testDriveModal">
+      <div class="modal-sheet">
+        <div class="modal-handle"></div>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+          <h3 style="font-size: 18px; font-weight: 800;">Book VIP Test Drive</h3>
+          <span style="cursor: pointer; font-size: 20px;" onclick="closeModal('testDriveModal')">✕</span>
+        </div>
+        <div style="font-size: 13px; color: var(--text-secondary); margin-bottom: 16px;">
+          Select your preferred experience and schedule:
+        </div>
+        <div style="display: flex; gap: 10px; margin-bottom: 16px;">
+          <div style="flex: 1; padding: 12px; border-radius: 12px; background: rgba(255,94,20,0.15); border: 1px solid var(--primary); text-align: center; font-weight: bold; font-size: 12px;">
+            🏬 Showroom Visit
+          </div>
+          <div style="flex: 1; padding: 12px; border-radius: 12px; background: var(--dark-card); border: 1px solid var(--dark-border); text-align: center; font-weight: bold; font-size: 12px;">
+            🏡 At-Home Concierge
+          </div>
+        </div>
+        <div style="margin-bottom: 14px;">
+          <div style="font-size: 12px; font-weight: bold; margin-bottom: 8px;">Select Slot</div>
+          <div style="display: flex; gap: 8px;">
+            <div style="background: var(--primary); padding: 8px 12px; border-radius: 8px; font-size: 11px; font-weight: bold;">Tomorrow 11:30 AM</div>
+            <div style="background: var(--dark-card); padding: 8px 12px; border-radius: 8px; font-size: 11px;">Tomorrow 2:00 PM</div>
+            <div style="background: var(--dark-card); padding: 8px 12px; border-radius: 8px; font-size: 11px;">Thu 4:30 PM</div>
+          </div>
+        </div>
+        <button class="modal-btn" onclick="confirmTestDrive()">Confirm Reservation</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Car Catalog with verified stock image URLs from Unsplash
+    const cars = [
+      {
+        id: 'c1',
+        brand: 'Porsche',
+        model: '911 GT3 RS (992)',
+        year: 2024,
+        price: 289900,
+        hp: 518,
+        accel: '3.0s',
+        topSpeed: '184 mph',
+        mileage: '1,240 mi',
+        fuel: 'Gasoline',
+        image: 'https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?auto=format&fit=crop&w=1200&q=80',
+        deal: true
+      },
+      {
+        id: 'c2',
+        brand: 'Tesla',
+        model: 'Model S Plaid Tri-Motor',
+        year: 2024,
+        price: 89990,
+        hp: 1020,
+        accel: '1.99s',
+        topSpeed: '200 mph',
+        mileage: '3,800 mi',
+        fuel: 'Electric',
+        image: 'https://images.unsplash.com/photo-1560958089-b8a1929cea89?auto=format&fit=crop&w=1200&q=80',
+        deal: false
+      },
+      {
+        id: 'c3',
+        brand: 'Mercedes-Benz',
+        model: 'AMG GT 63 S Coupe',
+        year: 2024,
+        price: 175900,
+        hp: 577,
+        accel: '3.1s',
+        topSpeed: '196 mph',
+        mileage: '2,600 mi',
+        fuel: 'Gasoline',
+        image: 'https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?auto=format&fit=crop&w=1200&q=80',
+        deal: true
+      },
+      {
+        id: 'c4',
+        brand: 'BMW',
+        model: 'M4 Competition xDrive',
+        year: 2023,
+        price: 86500,
+        hp: 503,
+        accel: '3.4s',
+        topSpeed: '180 mph',
+        mileage: '7,400 mi',
+        fuel: 'Gasoline',
+        image: 'https://images.unsplash.com/photo-1555215695-3004980ad54e?auto=format&fit=crop&w=1200&q=80',
+        deal: false
+      },
+      {
+        id: 'c5',
+        brand: 'Audi',
+        model: 'RS6 Avant Performance',
+        year: 2024,
+        price: 125800,
+        hp: 621,
+        accel: '3.3s',
+        topSpeed: '190 mph',
+        mileage: '4,100 mi',
+        fuel: 'Gasoline',
+        image: 'https://images.unsplash.com/photo-1603584173870-7f23fdae1b7a?auto=format&fit=crop&w=1200&q=80',
+        deal: false
+      },
+      {
+        id: 'c6',
+        brand: 'Lamborghini',
+        model: 'Huracán EVO Spyder',
+        year: 2023,
+        price: 298000,
+        hp: 631,
+        accel: '2.8s',
+        topSpeed: '202 mph',
+        mileage: '2,900 mi',
+        fuel: 'Gasoline',
+        image: 'https://images.unsplash.com/photo-1544829099-b9a0c07fad1a?auto=format&fit=crop&w=1200&q=80',
+        deal: true
+      },
+      {
+        id: 'c7',
+        brand: 'Land Rover',
+        model: 'Range Rover SV Autobiography',
+        year: 2024,
+        price: 218000,
+        hp: 606,
+        accel: '4.3s',
+        topSpeed: '162 mph',
+        mileage: '3,200 mi',
+        fuel: 'Gasoline',
+        image: 'https://images.unsplash.com/photo-1563720223185-11003d516935?auto=format&fit=crop&w=1200&q=80',
+        deal: false
+      },
+      {
+        id: 'c8',
+        brand: 'Ford Performance',
+        model: 'Mustang Dark Horse',
+        year: 2024,
+        price: 63200,
+        hp: 500,
+        accel: '3.9s',
+        topSpeed: '168 mph',
+        mileage: '1,850 mi',
+        fuel: 'Gasoline',
+        image: 'https://images.unsplash.com/photo-1584345604476-8ec5e12e42dd?auto=format&fit=crop&w=1200&q=80',
+        deal: true
+      }
+    ];
+
+    let favorites = new Set(['c1', 'c2']);
+    let currentBrand = 'All';
+    let activeCarForEmi = cars[0];
+
+    function renderCars() {
+      const list = document.getElementById('carsList');
+      const filtered = currentBrand === 'All'
+        ? cars
+        : cars.filter(c => c.brand.toLowerCase().includes(currentBrand.toLowerCase()));
+
+      document.getElementById('carCountLabel').innerText = `${filtered.length} vehicles`;
+
+      list.innerHTML = filtered.map(car => `
+        <div class="car-card" onclick="openDetails('${car.id}')">
+          <div class="card-img-wrap">
+            <img src="${car.image}" alt="${car.model}" loading="lazy">
+            <div class="fav-btn ${favorites.has(car.id) ? 'active' : ''}" onclick="toggleFav(event, '${car.id}')">
+              ${favorites.has(car.id) ? '❤️' : '🤍'}
+            </div>
+            <div class="telemetry-row">
+              <div class="tel-chip">⚡ <span>${car.accel}</span> 0-60</div>
+              <div class="tel-chip">🏎️ <span>${car.hp}</span> HP</div>
+              <div class="tel-chip">🚀 <span>${car.topSpeed}</span></div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="card-make">${car.year} • ${car.brand.toUpperCase()}</div>
+            <div class="card-title">${car.model}</div>
+            <div class="card-specs-row">
+              <div class="card-spec-pill">📍 Beverly Hills</div>
+              <div class="card-spec-pill">⏱️ ${car.mileage}</div>
+              <div class="card-spec-pill">${car.fuel}</div>
+            </div>
+            <div class="card-footer">
+              <div>
+                <div class="price-num">$${car.price.toLocaleString()}</div>
+                <div class="price-emi">Est. $${Math.round(car.price * 0.012).toLocaleString()}/mo</div>
+              </div>
+              <button style="background: rgba(255,94,20,0.12); color: var(--primary); border: none; padding: 6px 12px; border-radius: 8px; font-weight: 800; font-size: 11px; cursor: pointer;" onclick="openEmi(event, '${car.id}')">
+                Finance EMI ▾
+              </button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function toggleFav(e, id) {
+      e.stopPropagation();
+      if (favorites.has(id)) {
+        favorites.delete(id);
+      } else {
+        favorites.add(id);
+      }
+      document.getElementById('favBadge').innerText = favorites.size;
+      renderCars();
+    }
+
+    function filterBrand(brand, el) {
+      currentBrand = brand;
+      document.querySelectorAll('.brand-pill').forEach(b => b.classList.remove('active'));
+      if (el) el.classList.add('active');
+      renderCars();
+    }
+
+    function openEmi(e, carId) {
+      if (e) e.stopPropagation();
+      activeCarForEmi = cars.find(c => c.id === carId) || cars[0];
+      updateEmi();
+      document.getElementById('emiModal').classList.add('active');
+    }
+
+    function updateEmi() {
+      const downPct = parseInt(document.getElementById('downSlider').value);
+      const months = parseInt(document.getElementById('termSlider').value);
+      document.getElementById('downVal').innerText = downPct;
+      document.getElementById('termVal').innerText = `${months} Months`;
+
+      const downAmt = activeCarForEmi.price * (downPct / 100);
+      document.getElementById('downAmt').innerText = `$${Math.round(downAmt).toLocaleString()}`;
+
+      const principal = activeCarForEmi.price - downAmt;
+      const rate = (0.059) / 12;
+      const emi = (principal * rate * Math.pow(1 + rate, months)) / (Math.pow(1 + rate, months) - 1);
+      document.getElementById('emiResult').innerText = `$${Math.round(emi).toLocaleString()}/mo`;
+      document.getElementById('emiSubtitle').innerText = `${months} months loan @ 5.9% APR for ${activeCarForEmi.model}`;
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.remove('active');
+    }
+
+    function openDetails(carId) {
+      const car = typeof carId === 'string' ? cars.find(c => c.id === carId) : cars[0];
+      document.getElementById('testDriveModal').classList.add('active');
+    }
+
+    function openSellModal() {
+      alert("✨ Sell Vehicle Wizard:\\n1. Pick stock image or paste URL\\n2. Enter model & specs\\n3. AI Smart Valuation estimates value\\n4. Tap Publish to add directly into AutoVault!");
+    }
+
+    function confirmTestDrive() {
+      alert("✅ VIP Test Drive Confirmed! Our concierge specialist will have the vehicle prepared for you.");
+      closeModal('testDriveModal');
+    }
+
+    function switchTab(tab) {
+      document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+      if (tab === 'explore') document.getElementById('tabExplore').classList.add('active');
+      if (tab === 'search') {
+        document.getElementById('tabSearch').classList.add('active');
+        const q = prompt("Enter search keyword (e.g. Porsche, Plaid, V8, 500 HP):", "Porsche");
+        if (q) filterBrand(q);
+      }
+      if (tab === 'saved') {
+        document.getElementById('tabSaved').classList.add('active');
+        alert(`🏎️ Garage: ${favorites.size} saved vehicles ready for side-by-side spec comparison!`);
+      }
+      if (tab === 'profile') {
+        document.getElementById('tabProfile').classList.add('active');
+        alert("👤 AutoVault Premier Member: Elena Sterling\\nTier 1 Verified Buyer & Collector");
+      }
+    }
+
+    // Initial render
+    renderCars();
+  </script>
+</body>
+</html>

@@ -1,6 +1,7 @@
-package com.autovault.app
+package com.allsell.app
 
 import io.flutter.embedding.android.FlutterActivity
 
 class MainActivity: FlutterActivity() {
 }
+

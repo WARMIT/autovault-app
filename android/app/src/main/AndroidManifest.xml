@@ -1,11 +1,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.autovault.app">
+    package="com.allsell.app">
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 
     <application
-        android:label="AutoVault"
+        android:label="ALLSELL"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

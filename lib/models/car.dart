@@ -73,19 +73,21 @@ class Car {
       : 'https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?auto=format&fit=crop&w=1200&q=80';
 
   String get formattedPrice {
-    return '\$${price.toInt().toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}';
+    return 'ETB ${price.toInt().toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}';
   }
 
   String get formattedOriginalPrice {
     if (originalPrice == null) return '';
-    return '\$${originalPrice!.toInt().toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}';
+    return 'ETB ${originalPrice!.toInt().toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}';
   }
 
   String get formattedMileage {
-    return '${mileage.toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')} mi';
+    return '${mileage.toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')} km';
   }
 
-  double calculateMonthlyEmi({double downPaymentPercent = 0.15, int months = 60, double apr = 5.9}) {
+  String get specsSummary => '$year · $transmission · $fuelType · $formattedMileage';
+
+  double calculateMonthlyEmi({double downPaymentPercent = 0.20, int months = 48, double apr = 14.5}) {
     final loanAmount = price * (1.0 - downPaymentPercent);
     final monthlyRate = (apr / 100) / 12;
     if (monthlyRate == 0) return loanAmount / months;
@@ -93,9 +95,9 @@ class Car {
     return emi;
   }
 
-  String formattedMonthlyEmi({double downPaymentPercent = 0.15, int months = 60, double apr = 5.9}) {
+  String formattedMonthlyEmi({double downPaymentPercent = 0.20, int months = 48, double apr = 14.5}) {
     final emi = calculateMonthlyEmi(downPaymentPercent: downPaymentPercent, months: months, apr: apr);
-    return '\$${emi.toInt().toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}/mo';
+    return 'ETB ${emi.toInt().toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}/mo';
   }
 
   Car copyWith({

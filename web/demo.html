@@ -3,63 +3,125 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>AutoVault - Premium Car Marketplace (Interactive Demo)</title>
+  <title>ALLSELL - Connect & Simplify | Dual Marketplace Simulator</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <style>
     :root {
-      --primary: #FF5E14;
-      --primary-light: #FF8533;
-      --accent-cyan: #00E5FF;
-      --accent-gold: #FFB800;
-      --dark-bg: #0B0E14;
-      --dark-surface: #141923;
-      --dark-card: #1B2230;
-      --dark-border: #283347;
-      --text-primary: #F8FAFC;
-      --text-secondary: #94A3B8;
-      --text-muted: #64748B;
-      --success: #10B981;
+      --primary: #FF8D00;
+      --primary-hover: #E67E00;
+      --primary-light: #FFF2E0;
+      --primary-glow: rgba(255, 141, 0, 0.25);
+      --dark-bg: #0D0E11;
+      --dark-surface: #15181E;
+      --dark-card: #1D212A;
+      --dark-border: #2B313F;
+      --dark-text-primary: #FAF9F6;
+      --dark-text-secondary: #9FA6B2;
+      --dark-text-muted: #6C7280;
+      
+      --light-bg: #F7F5F0;
+      --light-surface: #FFFFFF;
+      --light-card: #FFFFFF;
+      --light-border: #E8E5DF;
+      --light-text-primary: #121417;
+      --light-text-secondary: #4A515E;
+      --light-text-muted: #8A92A0;
+
+      --verified-gold: #D97706;
+      --verified-bg: rgba(217, 119, 6, 0.12);
+      --success: #16A34A;
+      --telebirr: #0077FE;
+      --telebirr-bg: rgba(0, 119, 254, 0.12);
     }
 
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
       -webkit-tap-highlight-color: transparent;
     }
 
     body {
-      background: #06080C;
-      color: var(--text-primary);
+      background: #08090C;
+      color: var(--dark-text-primary);
       min-height: 100vh;
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
-      padding: 20px 10px;
+      padding: 24px 12px;
+      overflow-x: hidden;
     }
 
-    /* Device Showcase Wrapper */
+    .demo-header-banner {
+      max-width: 440px;
+      width: 100%;
+      margin-bottom: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 4px;
+    }
+    .demo-title-group h1 {
+      font-size: 15px;
+      font-weight: 800;
+      color: #FFF;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .demo-title-group p {
+      font-size: 11px;
+      color: var(--dark-text-muted);
+      margin-top: 1px;
+    }
+    .theme-toggle-btn {
+      background: #1A1D24;
+      border: 1px solid var(--dark-border);
+      color: var(--primary);
+      font-size: 12px;
+      font-weight: 700;
+      padding: 6px 12px;
+      border-radius: 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .theme-toggle-btn:hover {
+      border-color: var(--primary);
+    }
+
+    /* Device Mockup Shell */
     .device-shell {
       width: 100%;
       max-width: 440px;
       height: 900px;
       background: var(--dark-bg);
-      border-radius: 44px;
-      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9), 0 0 0 10px #1E2533, 0 0 40px rgba(255, 94, 20, 0.15);
+      border-radius: 46px;
+      box-shadow: 0 25px 70px rgba(0, 0, 0, 0.85), 0 0 0 10px #1A1D24, 0 0 50px rgba(255, 141, 0, 0.15);
       overflow: hidden;
       display: flex;
       flex-direction: column;
       position: relative;
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      transition: background 0.3s;
+    }
+
+    .device-shell.light-mode {
+      background: var(--light-bg);
+      box-shadow: 0 25px 70px rgba(0, 0, 0, 0.3), 0 0 0 10px #D8D4CC, 0 0 50px rgba(255, 141, 0, 0.1);
+      border-color: rgba(0, 0, 0, 0.06);
     }
 
     /* Dynamic Island / Notch */
     .notch {
-      width: 120px;
-      height: 24px;
+      width: 124px;
+      height: 25px;
       background: #000;
       border-radius: 20px;
       margin: 12px auto 0 auto;
@@ -68,303 +130,412 @@
       align-items: center;
       justify-content: space-between;
       padding: 0 12px;
+      flex-shrink: 0;
     }
     .notch-camera {
-      width: 10px;
-      height: 10px;
+      width: 9px;
+      height: 9px;
       background: #111;
       border-radius: 50%;
       border: 1px solid #222;
     }
+    .notch-speaker {
+      width: 42px;
+      height: 4px;
+      background: #1F1F1F;
+      border-radius: 4px;
+    }
 
-    /* Screen Views */
+    /* Screen Views Wrapper */
     .screen-container {
       flex: 1;
       overflow-y: auto;
       overflow-x: hidden;
-      padding-bottom: 90px;
+      padding-bottom: 84px;
       scroll-behavior: smooth;
+      position: relative;
     }
     .screen-container::-webkit-scrollbar {
       display: none;
     }
 
-    /* Top Bar */
-    .top-header {
-      padding: 12px 20px 8px 20px;
+    /* Top App Bar */
+    .app-header {
+      padding: 12px 18px 8px 18px;
       display: flex;
       justify-content: space-between;
-      align-items: center;
-    }
-    .loc-sub {
-      font-size: 10px;
-      font-weight: 800;
-      letter-spacing: 1.2px;
-      color: var(--text-muted);
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-    .app-brand {
-      font-size: 22px;
-      font-weight: 900;
-      letter-spacing: -0.5px;
-      margin-top: 2px;
-    }
-    .app-brand span {
-      color: var(--primary);
-    }
-    .badge-pro {
-      background: rgba(255, 94, 20, 0.15);
-      color: var(--primary);
-      font-size: 10px;
-      font-weight: 800;
-      padding: 2px 6px;
-      border-radius: 6px;
-      margin-left: 6px;
-    }
-
-    /* Search Bar */
-    .search-pill {
-      margin: 8px 20px 14px 20px;
-      background: var(--dark-card);
-      border: 1px solid var(--dark-border);
-      border-radius: 16px;
-      padding: 12px 16px;
-      display: flex;
       align-items: center;
       gap: 12px;
-      color: var(--text-muted);
-      font-size: 13px;
-      cursor: pointer;
-      transition: all 0.2s;
     }
-    .search-pill:hover {
-      border-color: var(--primary);
-    }
-
-    /* Hero Spotlight Carousel */
-    .hero-banner {
-      margin: 0 20px 16px 20px;
-      height: 200px;
-      border-radius: 22px;
-      position: relative;
-      overflow: hidden;
+    .brand-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
       cursor: pointer;
+    }
+    .brand-logo-img {
+      height: 28px;
+      width: auto;
+      object-fit: contain;
+    }
+    .brand-text {
+      font-size: 20px;
+      font-weight: 900;
+      letter-spacing: -0.6px;
+      display: flex;
+      align-items: center;
+    }
+    .device-shell.light-mode .brand-text {
+      color: var(--light-text-primary);
+    }
+    .brand-text span {
+      color: var(--primary);
+    }
+    
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .location-pill {
+      background: var(--dark-card);
       border: 1px solid var(--dark-border);
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
-    }
-    .hero-banner img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 0.5s ease;
-    }
-    .hero-banner:hover img {
-      transform: scale(1.04);
-    }
-    .hero-overlay {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(180deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.85) 100%);
-      padding: 16px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-    .badge-spotlight {
-      align-self: flex-start;
-      background: var(--primary);
-      color: white;
-      font-size: 10px;
-      font-weight: 900;
-      padding: 4px 8px;
-      border-radius: 8px;
-      letter-spacing: 0.5px;
-    }
-    .hero-content {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-    }
-    .hero-title {
-      font-size: 18px;
-      font-weight: 900;
-      color: white;
-    }
-    .hero-sub {
-      font-size: 11px;
-      color: var(--accent-cyan);
-      font-weight: 700;
-      margin-bottom: 2px;
-    }
-    .hero-price {
-      background: white;
-      color: black;
+      border-radius: 20px;
       padding: 6px 12px;
-      border-radius: 12px;
-      font-weight: 900;
-      font-size: 15px;
-      text-align: right;
-    }
-    .hero-price small {
-      display: block;
-      font-size: 9px;
-      color: #666;
+      font-size: 11.5px;
       font-weight: 700;
-    }
-
-    /* Brands Scroll */
-    .section-title {
-      padding: 0 20px;
-      margin-bottom: 10px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 16px;
-      font-weight: 800;
-    }
-    .brands-row {
-      display: flex;
-      gap: 10px;
-      padding: 0 20px 16px 20px;
-      overflow-x: auto;
-    }
-    .brands-row::-webkit-scrollbar { display: none; }
-    .brand-pill {
-      background: var(--dark-card);
-      border: 1px solid var(--dark-border);
-      border-radius: 20px;
-      padding: 8px 14px;
       display: flex;
       align-items: center;
-      gap: 6px;
-      font-size: 12px;
-      font-weight: 700;
-      white-space: nowrap;
+      gap: 5px;
       cursor: pointer;
+      color: var(--dark-text-primary);
       transition: all 0.2s;
     }
-    .brand-pill.active {
-      background: var(--primary);
+    .device-shell.light-mode .location-pill {
+      background: var(--light-card);
+      border-color: var(--light-border);
+      color: var(--light-text-primary);
+    }
+    .location-pill:hover {
       border-color: var(--primary);
-      color: white;
-      box-shadow: 0 4px 12px rgba(255, 94, 20, 0.4);
     }
-
-    /* Car Cards List */
-    .card-list {
-      padding: 0 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-    .car-card {
-      background: var(--dark-card);
-      border: 1px solid var(--dark-border);
-      border-radius: 20px;
-      overflow: hidden;
-      cursor: pointer;
-      transition: transform 0.2s, border-color 0.2s;
-    }
-    .car-card:hover {
-      transform: translateY(-2px);
-      border-color: rgba(255, 94, 20, 0.5);
-    }
-    .card-img-wrap {
-      height: 180px;
-      position: relative;
-    }
-    .card-img-wrap img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-    .fav-btn {
-      position: absolute;
-      top: 12px;
-      right: 12px;
+    .filter-icon-btn {
       width: 34px;
       height: 34px;
-      border-radius: 50%;
-      background: rgba(0,0,0,0.65);
-      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 12px;
+      background: var(--dark-card);
+      border: 1px solid var(--dark-border);
+      color: var(--dark-text-primary);
       display: flex;
       align-items: center;
       justify-content: center;
-      color: white;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .device-shell.light-mode .filter-icon-btn {
+      background: var(--light-card);
+      border-color: var(--light-border);
+      color: var(--light-text-primary);
+    }
+    .filter-icon-btn:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    /* Universal Search Bar */
+    .search-box-wrap {
+      padding: 6px 18px 10px 18px;
+    }
+    .search-container {
+      background: var(--dark-card);
+      border: 1px solid var(--dark-border);
+      border-radius: 16px;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--dark-text-muted);
+      transition: all 0.2s;
+    }
+    .device-shell.light-mode .search-container {
+      background: var(--light-card);
+      border-color: var(--light-border);
+      color: var(--light-text-muted);
+    }
+    .search-container:focus-within {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-glow);
+    }
+    .search-input {
+      background: transparent;
+      border: none;
+      outline: none;
+      color: inherit;
+      font-size: 13px;
+      font-weight: 500;
+      width: 100%;
+    }
+    .device-shell.light-mode .search-input {
+      color: var(--light-text-primary);
+    }
+
+    /* Segmented Dual-Category Switcher */
+    .category-switcher-wrap {
+      padding: 0 18px 12px 18px;
+    }
+    .category-segmented-bar {
+      background: #11141A;
+      border: 1px solid var(--dark-border);
+      padding: 4px;
+      border-radius: 16px;
+      display: flex;
+      position: relative;
+    }
+    .device-shell.light-mode .category-segmented-bar {
+      background: #E8E5DF;
+      border-color: #DBD7CE;
+    }
+    .category-tab {
+      flex: 1;
+      padding: 9px 0;
+      border-radius: 12px;
+      text-align: center;
+      font-size: 13.5px;
+      font-weight: 800;
+      cursor: pointer;
+      color: var(--dark-text-secondary);
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      border: none;
+      background: transparent;
+    }
+    .device-shell.light-mode .category-tab {
+      color: var(--light-text-secondary);
+    }
+    .category-tab.active {
+      background: var(--primary);
+      color: #000;
+      box-shadow: 0 4px 12px rgba(255, 141, 0, 0.35);
+    }
+
+    /* Promotional Banner */
+    .promo-banner-wrap {
+      padding: 0 18px 14px 18px;
+    }
+    .promo-card {
+      border-radius: 20px;
+      background: linear-gradient(135deg, #2E1500 0%, #150900 60%, #3D1C00 100%);
+      border: 1px solid rgba(255, 141, 0, 0.25);
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+    }
+    .device-shell.light-mode .promo-card {
+      background: linear-gradient(135deg, #FFF0DC 0%, #FFE3C0 100%);
+      border-color: rgba(255, 141, 0, 0.4);
+    }
+    .promo-badge {
+      background: var(--primary);
+      color: #000;
+      font-size: 9.5px;
+      font-weight: 900;
+      padding: 3px 8px;
+      border-radius: 6px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      display: inline-block;
+      margin-bottom: 6px;
+    }
+    .promo-text h3 {
+      font-size: 14px;
+      font-weight: 800;
+      color: #FFF;
+      line-height: 1.25;
+    }
+    .device-shell.light-mode .promo-text h3 {
+      color: #121417;
+    }
+    .promo-text p {
+      font-size: 11px;
+      color: #D1A87D;
+      margin-top: 3px;
+    }
+    .device-shell.light-mode .promo-text p {
+      color: #7A5328;
+    }
+    .promo-cta-arrow {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: 900;
+      flex-shrink: 0;
+    }
+
+    /* Feed Header */
+    .feed-header-row {
+      padding: 2px 18px 10px 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .feed-title {
+      font-size: 15px;
+      font-weight: 800;
+    }
+    .device-shell.light-mode .feed-title {
+      color: var(--light-text-primary);
+    }
+    .feed-count {
+      font-size: 11.5px;
+      color: var(--dark-text-muted);
+      font-weight: 600;
+    }
+
+    /* 2-Column Responsive Grid */
+    .listing-grid {
+      padding: 0 18px 16px 18px;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+    .listing-card {
+      background: var(--dark-card);
+      border: 1px solid var(--dark-border);
+      border-radius: 18px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      cursor: pointer;
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+      position: relative;
+    }
+    .device-shell.light-mode .listing-card {
+      background: var(--light-card);
+      border-color: var(--light-border);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+    }
+    .listing-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--primary);
+    }
+    .card-thumb-wrap {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1.25;
+      background: #11141A;
+      overflow: hidden;
+    }
+    .card-thumb-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.35s ease;
+    }
+    .listing-card:hover .card-thumb-wrap img {
+      transform: scale(1.05);
+    }
+    .tag-badge {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      background: rgba(13, 14, 17, 0.85);
+      backdrop-filter: blur(4px);
+      color: #FFF;
+      font-size: 9px;
+      font-weight: 800;
+      padding: 3px 6px;
+      border-radius: 6px;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+    }
+    .fav-heart-btn {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.65);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
       cursor: pointer;
       transition: transform 0.15s;
     }
-    .fav-btn.active {
+    .fav-heart-btn:hover {
+      transform: scale(1.15);
+    }
+    .fav-heart-btn.active {
       color: #FF3366;
     }
-    .telemetry-row {
-      position: absolute;
-      bottom: 10px;
-      left: 12px;
+
+    .card-info {
+      padding: 10px;
       display: flex;
-      gap: 6px;
+      flex-direction: column;
+      flex: 1;
     }
-    .tel-chip {
-      background: rgba(0,0,0,0.7);
-      backdrop-filter: blur(4px);
-      border: 1px solid rgba(255,255,255,0.2);
-      padding: 4px 8px;
-      border-radius: 8px;
-      font-size: 10px;
-      font-weight: 800;
-      color: white;
+    .card-verified-row {
       display: flex;
       align-items: center;
       gap: 4px;
-    }
-    .tel-chip span {
-      color: var(--primary);
-    }
-    .card-body {
-      padding: 14px 16px;
-    }
-    .card-make {
       font-size: 10px;
       font-weight: 800;
+      color: var(--verified-gold);
+      margin-bottom: 3px;
+    }
+    .card-price {
+      font-size: 14.5px;
+      font-weight: 900;
       color: var(--primary);
-      letter-spacing: 1.1px;
+      letter-spacing: -0.3px;
     }
     .card-title {
-      font-size: 16px;
-      font-weight: 800;
-      margin: 2px 0 8px 0;
-    }
-    .card-specs-row {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 12px;
-    }
-    .card-spec-pill {
-      background: var(--dark-surface);
-      padding: 4px 8px;
-      border-radius: 6px;
-      font-size: 11px;
-      color: var(--text-secondary);
-      font-weight: 600;
-    }
-    .card-footer {
-      border-top: 1px solid var(--dark-border);
-      padding-top: 10px;
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-    }
-    .price-num {
-      font-size: 19px;
-      font-weight: 900;
-      color: white;
-    }
-    .price-emi {
-      font-size: 11px;
-      color: var(--primary);
+      font-size: 12px;
       font-weight: 700;
+      color: var(--dark-text-primary);
+      margin-top: 3px;
+      line-height: 1.3;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .device-shell.light-mode .card-title {
+      color: var(--light-text-primary);
+    }
+    .card-specs {
+      font-size: 10.5px;
+      color: var(--dark-text-secondary);
+      margin-top: 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .device-shell.light-mode .card-specs {
+      color: var(--light-text-secondary);
+    }
+    .card-loc {
+      font-size: 10px;
+      color: var(--dark-text-muted);
+      margin-top: 6px;
+      display: flex;
+      align-items: center;
+      gap: 3px;
     }
 
     /* Bottom Navigation Bar */
@@ -373,539 +544,1516 @@
       bottom: 0;
       left: 0;
       right: 0;
-      height: 78px;
-      background: var(--dark-surface);
+      height: 74px;
+      background: rgba(21, 24, 30, 0.95);
+      backdrop-filter: blur(12px);
       border-top: 1px solid var(--dark-border);
       display: flex;
       justify-content: space-around;
       align-items: center;
-      padding-bottom: 12px;
       z-index: 40;
+      padding: 0 10px;
     }
-    .nav-tab {
+    .device-shell.light-mode .bottom-nav {
+      background: rgba(255, 255, 255, 0.96);
+      border-color: var(--light-border);
+    }
+    .nav-item {
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 4px;
-      color: var(--text-muted);
+      color: var(--dark-text-muted);
+      cursor: pointer;
       font-size: 10px;
       font-weight: 700;
-      cursor: pointer;
+      transition: all 0.2s;
+      background: transparent;
+      border: none;
       position: relative;
     }
-    .nav-tab.active {
+    .device-shell.light-mode .nav-item {
+      color: var(--light-text-muted);
+    }
+    .nav-item.active {
       color: var(--primary);
     }
-    .nav-tab svg {
+    .nav-item svg {
       width: 22px;
       height: 22px;
       fill: currentColor;
     }
-    .nav-center-btn {
+    .nav-center-add {
       width: 44px;
       height: 44px;
-      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      border-radius: 50%;
+      background: var(--primary);
+      color: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      font-weight: 900;
+      box-shadow: 0 4px 14px rgba(255, 141, 0, 0.4);
+      margin-top: -14px;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    .nav-center-add:hover {
+      transform: scale(1.08);
+    }
+    .nav-badge-dot {
+      position: absolute;
+      top: -2px;
+      right: 8px;
+      background: #FF3366;
+      color: #FFF;
+      font-size: 9px;
+      font-weight: 800;
+      width: 15px;
+      height: 15px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: white;
-      box-shadow: 0 4px 14px rgba(255, 94, 20, 0.4);
-      margin-top: -14px;
     }
 
-    /* Modals & Dialogs */
-    .modal-overlay {
+    /* Modals & Sheets */
+    .modal-backdrop {
       position: absolute;
       inset: 0;
-      background: rgba(0,0,0,0.75);
-      backdrop-filter: blur(5px);
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(6px);
       z-index: 60;
       display: none;
       align-items: flex-end;
     }
-    .modal-overlay.active {
+    .modal-backdrop.active {
       display: flex;
     }
-    .modal-sheet {
+    .sheet-card {
       width: 100%;
-      max-height: 85%;
+      max-height: 88%;
       background: var(--dark-surface);
       border-top-left-radius: 28px;
       border-top-right-radius: 28px;
       border-top: 1px solid var(--dark-border);
       padding: 20px;
       overflow-y: auto;
-      animation: slideUp 0.25s ease-out;
+      animation: sheetUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
     }
-    @keyframes slideUp {
+    .device-shell.light-mode .sheet-card {
+      background: var(--light-surface);
+      border-color: var(--light-border);
+      color: var(--light-text-primary);
+    }
+    @keyframes sheetUp {
       from { transform: translateY(100%); }
       to { transform: translateY(0); }
     }
-    .modal-handle {
-      width: 40px;
+    .sheet-drag-handle {
+      width: 38px;
       height: 4px;
       background: var(--dark-border);
       border-radius: 4px;
       margin: 0 auto 16px auto;
     }
-    .modal-btn {
-      width: 100%;
-      background: var(--primary);
-      color: white;
-      border: none;
-      border-radius: 16px;
-      padding: 16px;
-      font-size: 15px;
-      font-weight: 800;
-      cursor: pointer;
-      margin-top: 16px;
+    .device-shell.light-mode .sheet-drag-handle {
+      background: var(--light-border);
     }
-    .slider-row {
-      margin: 16px 0;
-    }
-    .slider-label {
+    .sheet-header {
       display: flex;
       justify-content: space-between;
-      font-size: 13px;
-      font-weight: 700;
-      margin-bottom: 8px;
+      align-items: center;
+      margin-bottom: 14px;
     }
-    input[type=range] {
-      width: 100%;
-      accent-color: var(--primary);
+    .sheet-title {
+      font-size: 17px;
+      font-weight: 800;
+    }
+    .close-icon-btn {
+      background: transparent;
+      border: none;
+      color: var(--dark-text-muted);
+      font-size: 20px;
+      cursor: pointer;
     }
 
-    /* Badge Counter */
-    .nav-badge {
+    /* Sub-city List Grid */
+    .subcity-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .subcity-pill {
+      background: var(--dark-card);
+      border: 1px solid var(--dark-border);
+      padding: 10px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 700;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .device-shell.light-mode .subcity-pill {
+      background: var(--light-card);
+      border-color: var(--light-border);
+    }
+    .subcity-pill.active {
+      background: var(--primary);
+      color: #000;
+      border-color: var(--primary);
+    }
+
+    /* Detail View Overlay Screen */
+    .detail-overlay {
       position: absolute;
-      top: -3px;
-      right: 4px;
-      background: #FF3366;
-      color: white;
-      font-size: 9px;
-      font-weight: 900;
-      width: 16px;
-      height: 16px;
+      inset: 0;
+      background: var(--dark-bg);
+      z-index: 55;
+      display: none;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+    .device-shell.light-mode .detail-overlay {
+      background: var(--light-bg);
+    }
+    .detail-overlay.active {
+      display: flex;
+    }
+    .detail-top-nav {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      right: 14px;
+      display: flex;
+      justify-content: space-between;
+      z-index: 10;
+    }
+    .detail-circle-btn {
+      width: 36px;
+      height: 36px;
       border-radius: 50%;
+      background: rgba(0,0,0,0.65);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: white;
       display: flex;
       align-items: center;
       justify-content: center;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    .detail-image-box {
+      width: 100%;
+      height: 280px;
+      position: relative;
+      background: #000;
+    }
+    .detail-image-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .detail-body {
+      padding: 18px;
+      padding-bottom: 90px;
+    }
+    .detail-specs-table {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin: 14px 0;
+    }
+    .spec-gauge-card {
+      background: var(--dark-card);
+      border: 1px solid var(--dark-border);
+      border-radius: 14px;
+      padding: 10px;
+      text-align: center;
+    }
+    .device-shell.light-mode .spec-gauge-card {
+      background: var(--light-card);
+      border-color: var(--light-border);
+    }
+    .spec-gauge-val {
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--primary);
+    }
+    .spec-gauge-lbl {
+      font-size: 9px;
+      color: var(--dark-text-muted);
+      font-weight: 700;
+      margin-top: 2px;
+      text-transform: uppercase;
+    }
+
+    /* Agent KYC Card */
+    .agent-kyc-card {
+      background: var(--dark-card);
+      border: 1px solid var(--dark-border);
+      border-radius: 18px;
+      padding: 14px;
+      margin-top: 16px;
+    }
+    .device-shell.light-mode .agent-kyc-card {
+      background: var(--light-card);
+      border-color: var(--light-border);
+    }
+    .agent-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .agent-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: #000;
+      font-size: 18px;
+      font-weight: 900;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .agent-meta h4 {
+      font-size: 13.5px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .agent-tin {
+      font-size: 10.5px;
+      color: var(--verified-gold);
+      font-weight: 700;
+      margin-top: 2px;
+    }
+
+    /* Telebirr Paywall Unlock Block */
+    .paywall-block {
+      background: #111520;
+      border: 1.5px dashed var(--telebirr);
+      border-radius: 16px;
+      padding: 14px;
+      margin-top: 14px;
+      text-align: center;
+    }
+    .device-shell.light-mode .paywall-block {
+      background: #F0F6FF;
+    }
+    .masked-contact {
+      font-family: monospace;
+      font-size: 14px;
+      letter-spacing: 2px;
+      color: var(--dark-text-secondary);
+      margin: 6px 0;
+    }
+    .telebirr-unlock-btn {
+      background: linear-gradient(135deg, #0077FE 0%, #0056BF 100%);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 12px 18px;
+      font-size: 13px;
+      font-weight: 800;
+      width: 100%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 4px 14px rgba(0, 119, 254, 0.35);
+      margin-top: 8px;
+    }
+    .unlocked-phone-bar {
+      display: none;
+      background: rgba(22, 163, 74, 0.15);
+      border: 1px solid var(--success);
+      padding: 12px;
+      border-radius: 14px;
+      margin-top: 10px;
+      text-align: center;
+    }
+    .unlocked-phone-num {
+      font-size: 16px;
+      font-weight: 900;
+      color: var(--success);
+      margin-bottom: 6px;
+    }
+    .action-call-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .call-btn {
+      flex: 1;
+      padding: 10px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 800;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+    .call-btn.primary {
+      background: var(--success);
+      color: white;
+    }
+    .call-btn.secondary {
+      background: var(--dark-card);
+      border: 1px solid var(--dark-border);
+      color: var(--dark-text-primary);
+    }
+
+    /* Auditor & Government View Tabs */
+    .role-toggle-pill {
+      background: #11141A;
+      border: 1px solid var(--dark-border);
+      border-radius: 14px;
+      padding: 4px;
+      display: flex;
+      margin-bottom: 16px;
+    }
+    .role-btn {
+      flex: 1;
+      padding: 8px 0;
+      border-radius: 10px;
+      text-align: center;
+      font-size: 11px;
+      font-weight: 800;
+      cursor: pointer;
+      background: transparent;
+      border: none;
+      color: var(--dark-text-muted);
+      transition: all 0.2s;
+    }
+    .role-btn.active {
+      background: var(--primary);
+      color: #000;
+    }
+
+    /* Auditor KPI Cards */
+    .auditor-kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .kpi-stat-card {
+      background: var(--dark-card);
+      border: 1px solid var(--dark-border);
+      border-radius: 16px;
+      padding: 12px;
+    }
+    .device-shell.light-mode .kpi-stat-card {
+      background: var(--light-card);
+      border-color: var(--light-border);
+    }
+    .kpi-title {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--dark-text-muted);
+      text-transform: uppercase;
+    }
+    .kpi-val {
+      font-size: 16px;
+      font-weight: 900;
+      color: var(--primary);
+      margin-top: 4px;
+    }
+
+    /* Simulation Toast */
+    .toast-msg {
+      position: absolute;
+      top: 50px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-20px);
+      background: #0D0E11;
+      border: 1px solid var(--primary);
+      color: #FFF;
+      padding: 10px 18px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+      z-index: 100;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.3s;
+      white-space: nowrap;
+    }
+    .toast-msg.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
     }
   </style>
 </head>
 <body>
 
-  <div class="device-shell">
-    <!-- Top Notch -->
+  <!-- Demo Shell Header / Theme Switcher -->
+  <div class="demo-header-banner">
+    <div class="demo-title-group">
+      <h1>ALLSELL <span>•</span> Interactive Simulator</h1>
+      <p>Dual-Vertical Marketplace (Houses & Cars) · Ethiopia</p>
+    </div>
+    <button class="theme-toggle-btn" onclick="toggleTheme()">
+      <span id="themeIcon">☀️</span> <span id="themeLabel">Light</span>
+    </button>
+  </div>
+
+  <!-- Mobile Frame Device Shell -->
+  <div class="device-shell" id="phoneShell">
+    
+    <!-- Top Hardware Island -->
     <div class="notch">
-      <div style="font-size: 11px; font-weight: 800; color: white;">9:41</div>
       <div class="notch-camera"></div>
-      <div style="font-size: 10px; color: white;">5G 100%</div>
+      <div class="notch-speaker"></div>
     </div>
 
-    <!-- Active Screen -->
-    <div class="screen-container" id="screenContainer">
-      <!-- Top Header -->
-      <div class="top-header">
-        <div>
-          <div class="loc-sub">📍 BEVERLY HILLS, CA ▾</div>
-          <div class="app-brand">Auto<span>Vault</span> <span class="badge-pro">PRO</span></div>
+    <!-- Active Screen Scroll Container -->
+    <div class="screen-container" id="mainScreen">
+      
+      <!-- Top App Bar -->
+      <header class="app-header">
+        <div class="brand-wrap" onclick="resetToHome()">
+          <img src="assets/images/logo.png" alt="ALLSELL Logo" class="brand-logo-img" onerror="this.onerror=null; this.src='../assets/images/logo.png';">
+          <div class="brand-text">ALL<span>SELL</span></div>
         </div>
-        <div style="display: flex; gap: 8px;">
-          <div style="width: 38px; height: 38px; border-radius: 50%; background: var(--dark-card); border: 1px solid var(--dark-border); display: flex; align-items: center; justify-content: center; cursor: pointer;">
-            🔔
+        <div class="header-actions">
+          <div class="location-pill" onclick="openLocationPicker()">
+            <span>📍</span>
+            <span id="activeLocationLabel">Addis Ababa</span>
+            <span>▾</span>
           </div>
+          <button class="filter-icon-btn" onclick="openFilterSheet()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <line x1="4" y1="6" x2="20" y2="6"></line>
+              <line x1="7" y1="12" x2="17" y2="12"></line>
+              <line x1="10" y1="18" x2="14" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+      </header>
+
+      <!-- Universal Search Box -->
+      <div class="search-box-wrap">
+        <div class="search-container">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input 
+            type="text" 
+            id="searchInput"
+            class="search-input" 
+            placeholder="Search houses or cars in Addis Ababa..."
+            oninput="handleSearch(this.value)"
+          >
         </div>
       </div>
 
-      <!-- Search Trigger -->
-      <div class="search-pill" onclick="switchTab('search')">
-        <span>🔍</span>
-        <span>Search Porsche, Tesla, AMG, V8, Electric...</span>
+      <!-- Segmented Dual-Category Switcher -->
+      <div class="category-switcher-wrap">
+        <div class="category-segmented-bar">
+          <button class="category-tab active" id="tabHouses" onclick="switchCategory('houses')">
+            <span>🏠</span> Houses
+          </button>
+          <button class="category-tab" id="tabCars" onclick="switchCategory('cars')">
+            <span>🚗</span> Cars
+          </button>
+        </div>
       </div>
 
-      <!-- Spotlight Hero Banner -->
-      <div class="hero-banner" onclick="openDetails(0)">
-        <img src="https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?auto=format&fit=crop&w=1200&q=80" alt="Porsche GT3 RS">
-        <div class="hero-overlay">
-          <div class="badge-spotlight">⭐ FEATURED SPOTLIGHT</div>
-          <div class="hero-content">
-            <div>
-              <div class="hero-sub">2024 PORSCHE</div>
-              <div class="hero-title">911 GT3 RS (992)</div>
-              <div style="font-size: 11px; color: rgba(255,255,255,0.7); margin-top: 2px;">518 HP • 0-60 in 3.0s • Weissach</div>
-            </div>
-            <div class="hero-price">
-              $289,900
-              <small>$3,450/mo</small>
-            </div>
+      <!-- Featured Weekly Banner -->
+      <div class="promo-banner-wrap">
+        <div class="promo-card" onclick="showToast('Featured Verified Broker Deal Highlighted')">
+          <div class="promo-text">
+            <span class="promo-badge">Featured This Week</span>
+            <h3 id="promoBannerHeadline">Luxury Bole Villas &<br>Verified Toyota Prado SUVs</h3>
+            <p>100% Verified Ownership & TIN Verified Agents</p>
           </div>
+          <div class="promo-cta-arrow">→</div>
         </div>
       </div>
 
-      <!-- Marques Row -->
-      <div class="section-title">
-        <span>Top Marques</span>
-        <span style="font-size: 12px; color: var(--primary); cursor: pointer;" onclick="filterBrand('All')">View All</span>
-      </div>
-      <div class="brands-row">
-        <div class="brand-pill active" onclick="filterBrand('All', this)">🌟 All Makes</div>
-        <div class="brand-pill" onclick="filterBrand('Porsche', this)">🏎️ Porsche</div>
-        <div class="brand-pill" onclick="filterBrand('Tesla', this)">⚡ Tesla</div>
-        <div class="brand-pill" onclick="filterBrand('Mercedes-Benz', this)">⭐ Mercedes</div>
-        <div class="brand-pill" onclick="filterBrand('BMW', this)">🏁 BMW</div>
-        <div class="brand-pill" onclick="filterBrand('Audi', this)">⭕ Audi</div>
-        <div class="brand-pill" onclick="filterBrand('Lamborghini', this)">🐂 Lamborghini</div>
+      <!-- Feed Category Title & Sub-City Pill Row -->
+      <div class="feed-header-row">
+        <div class="feed-title" id="feedSectionTitle">Houses in Addis Ababa</div>
+        <div class="feed-count" id="feedCounterLabel">Showing 6 listings</div>
       </div>
 
-      <!-- Feed Section -->
-      <div class="section-title">
-        <span>Verified Inventory</span>
-        <span style="font-size: 12px; color: var(--text-muted);" id="carCountLabel">8 vehicles</span>
+      <!-- 2-Column Responsive Grid -->
+      <div class="listing-grid" id="listingGrid">
+        <!-- Rendered dynamically via JS -->
       </div>
 
-      <div class="card-list" id="carsList">
-        <!-- Rendered dynamically -->
-      </div>
     </div>
 
-    <!-- Bottom Navigation -->
-    <div class="bottom-nav">
-      <div class="nav-tab active" id="tabExplore" onclick="switchTab('explore')">
-        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.5l-2.5-5.5L14 8.5l-2.5 5.5z"/></svg>
+    <!-- Bottom Navigation Bar (4 Destinations) -->
+    <nav class="bottom-nav">
+      <button class="nav-item active" id="navExplore" onclick="navTo('explore')">
+        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 14.5l-4.5-1.5L7 10.5 11.5 12l1.5 4.5z"/></svg>
         <span>Explore</span>
-      </div>
-      <div class="nav-tab" id="tabSearch" onclick="switchTab('search')">
-        <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
-        <span>Search</span>
-      </div>
-      <div class="nav-tab" onclick="openSellModal()">
-        <div class="nav-center-btn">
-          <svg style="width: 24px; height: 24px;" viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
-        </div>
-        <span>Sell Car</span>
-      </div>
-      <div class="nav-tab" id="tabSaved" onclick="switchTab('saved')">
+      </button>
+
+      <button class="nav-center-add" onclick="openAddListingModal()" title="Add Listing">
+        +
+      </button>
+
+      <button class="nav-item" id="navFavorites" onclick="navTo('favorites')">
         <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-        <div class="nav-badge" id="favBadge">2</div>
-        <span>Garage</span>
-      </div>
-      <div class="nav-tab" id="tabProfile" onclick="switchTab('profile')">
+        <span>Saved</span>
+        <div class="nav-badge-dot" id="favBadge">2</div>
+      </button>
+
+      <button class="nav-item" id="navAccount" onclick="navTo('account')">
         <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-        <span>Profile</span>
+        <span>Portals</span>
+      </button>
+    </nav>
+
+    <!-- Sub-City Location Picker Modal -->
+    <div class="modal-backdrop" id="locationModal">
+      <div class="sheet-card">
+        <div class="sheet-drag-handle"></div>
+        <div class="sheet-header">
+          <div class="sheet-title">Select Sub-City</div>
+          <button class="close-icon-btn" onclick="closeModal('locationModal')">✕</button>
+        </div>
+        <p style="font-size: 11.5px; color: var(--dark-text-muted); margin-bottom: 8px;">Filter houses and cars in Addis Ababa:</p>
+        <div class="subcity-grid">
+          <div class="subcity-pill active" onclick="selectSubCity('All Sub-cities')">All Sub-cities</div>
+          <div class="subcity-pill" onclick="selectSubCity('Bole')">Bole</div>
+          <div class="subcity-pill" onclick="selectSubCity('Kirkos')">Kirkos / Kazanchis</div>
+          <div class="subcity-pill" onclick="selectSubCity('Yeka')">Yeka / CMC</div>
+          <div class="subcity-pill" onclick="selectSubCity('Nifas Silk')">Nifas Silk / Sarbet</div>
+          <div class="subcity-pill" onclick="selectSubCity('Lideta')">Lideta</div>
+          <div class="subcity-pill" onclick="selectSubCity('Arada')">Arada / Piazza</div>
+          <div class="subcity-pill" onclick="selectSubCity('Akaki Kality')">Akaki Kality</div>
+        </div>
       </div>
     </div>
 
-    <!-- Loan / Financing Modal -->
-    <div class="modal-overlay" id="emiModal">
-      <div class="modal-sheet">
-        <div class="modal-handle"></div>
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-          <h3 style="font-size: 18px; font-weight: 800;">Finance & EMI Calculator</h3>
-          <span style="cursor: pointer; font-size: 20px;" onclick="closeModal('emiModal')">✕</span>
+    <!-- Filter Bottom Sheet Modal -->
+    <div class="modal-backdrop" id="filterModal">
+      <div class="sheet-card">
+        <div class="sheet-drag-handle"></div>
+        <div class="sheet-header">
+          <div class="sheet-title" id="filterSheetTitle">Filter Houses</div>
+          <button class="close-icon-btn" onclick="closeModal('filterModal')">✕</button>
         </div>
-        <div style="background: #111622; padding: 16px; border-radius: 18px; border: 1px solid var(--primary); text-align: center; margin-bottom: 16px;">
-          <div style="font-size: 11px; color: var(--primary); font-weight: 800;">ESTIMATED MONTHLY PAYMENT</div>
-          <div id="emiResult" style="font-size: 32px; font-weight: 900; margin: 4px 0;">$3,450/mo</div>
-          <div id="emiSubtitle" style="font-size: 12px; color: var(--text-muted);">60 months loan @ 5.9% APR</div>
+        <div id="filterSheetBody">
+          <!-- Dynamically populated based on active category -->
         </div>
-
-        <div class="slider-row">
-          <div class="slider-label">
-            <span>Down Payment (<span id="downVal">15</span>%)</span>
-            <span style="color: var(--primary); font-weight: 800;" id="downAmt">$43,485</span>
-          </div>
-          <input type="range" id="downSlider" min="5" max="50" value="15" oninput="updateEmi()">
-        </div>
-
-        <div class="slider-row">
-          <div class="slider-label">
-            <span>Loan Duration</span>
-            <span style="color: var(--accent-cyan); font-weight: 800;" id="termVal">60 Months</span>
-          </div>
-          <input type="range" id="termSlider" min="24" max="72" step="12" value="60" oninput="updateEmi()">
-        </div>
-
-        <button class="modal-btn" onclick="alert('Instant Pre-Approval Application Submitted!'); closeModal('emiModal');">Apply for Instant Pre-Approval</button>
+        <button class="telebirr-unlock-btn" style="background: var(--primary); color: #000; margin-top: 14px;" onclick="applyFilters()">
+          Apply Filters
+        </button>
       </div>
     </div>
 
-    <!-- Test Drive Booking Modal -->
-    <div class="modal-overlay" id="testDriveModal">
-      <div class="modal-sheet">
-        <div class="modal-handle"></div>
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
-          <h3 style="font-size: 18px; font-weight: 800;">Book VIP Test Drive</h3>
-          <span style="cursor: pointer; font-size: 20px;" onclick="closeModal('testDriveModal')">✕</span>
+    <!-- Detail View Fullscreen Overlay -->
+    <div class="detail-overlay" id="detailOverlay">
+      <div class="detail-top-nav">
+        <div class="detail-circle-btn" onclick="closeDetailOverlay()">✕</div>
+        <div class="detail-circle-btn" id="detailFavBtn" onclick="toggleDetailFav()">🤍</div>
+      </div>
+
+      <div class="detail-image-box">
+        <img id="detailImg" src="" alt="Listing photo">
+        <div class="tag-badge" id="detailBadge" style="top: auto; bottom: 12px; left: 14px;">FOR SALE</div>
+      </div>
+
+      <div class="detail-body">
+        <div class="card-verified-row" id="detailVerifiedRow">
+          <span>✓</span> VERIFIED BROKER LISTING
         </div>
-        <div style="font-size: 13px; color: var(--text-secondary); margin-bottom: 16px;">
-          Select your preferred experience and schedule:
+        <div class="card-price" id="detailPrice" style="font-size: 22px;">ETB 18,500,000</div>
+        <h2 id="detailTitle" style="font-size: 18px; font-weight: 800; margin-top: 4px;">Modern Luxury Villa</h2>
+        <div class="card-loc" id="detailLocation" style="font-size: 12px; margin-top: 6px;">
+          📍 Bole Atlas, Addis Ababa
         </div>
-        <div style="display: flex; gap: 10px; margin-bottom: 16px;">
-          <div style="flex: 1; padding: 12px; border-radius: 12px; background: rgba(255,94,20,0.15); border: 1px solid var(--primary); text-align: center; font-weight: bold; font-size: 12px;">
-            🏬 Showroom Visit
+
+        <!-- Dynamic Specs Table -->
+        <div class="detail-specs-table" id="detailSpecsGrid">
+          <!-- Populated via JS -->
+        </div>
+
+        <div style="margin: 14px 0;">
+          <h4 style="font-size: 13.5px; font-weight: 800; margin-bottom: 6px;">Overview & Verification</h4>
+          <p id="detailDesc" style="font-size: 12.5px; line-height: 1.5; color: var(--dark-text-secondary);">
+            Property details and verified documentation inspection.
+          </p>
+        </div>
+
+        <!-- Verified Agent KYC Card with Telebirr Paywall -->
+        <div class="agent-kyc-card">
+          <div class="agent-row">
+            <div class="agent-avatar" id="agentAvatarLetter">A</div>
+            <div class="agent-meta">
+              <h4 id="agentNameLabel">Abebe Demisse <span style="color:var(--verified-gold); font-size: 11px;">✓ Verified</span></h4>
+              <div class="agent-tin" id="agentTinLabel">TIN: 0048192841 · Licensed Broker</div>
+              <div style="font-size: 10px; color: var(--dark-text-muted); margin-top: 2px;">Member since 2022 · 48 verified deals</div>
+            </div>
           </div>
-          <div style="flex: 1; padding: 12px; border-radius: 12px; background: var(--dark-card); border: 1px solid var(--dark-border); text-align: center; font-weight: bold; font-size: 12px;">
-            🏡 At-Home Concierge
+
+          <!-- Gated Contact Paywall -->
+          <div class="paywall-block" id="paywallContainer">
+            <div style="font-size: 12px; font-weight: 800; color: #FFF;" id="paywallHeadline">Broker Contact Protected</div>
+            <div class="masked-contact" id="maskedPhoneDisplay">+251 91 ••• ••34</div>
+            <p style="font-size: 10.5px; color: var(--dark-text-muted);">
+              Unlock direct mobile phone & WhatsApp to contact this verified agent:
+            </p>
+            <button class="telebirr-unlock-btn" onclick="openTelebirrPrompt()">
+              <span>⚡</span> Reveal Contact with Telebirr (20 ETB)
+            </button>
           </div>
-        </div>
-        <div style="margin-bottom: 14px;">
-          <div style="font-size: 12px; font-weight: bold; margin-bottom: 8px;">Select Slot</div>
-          <div style="display: flex; gap: 8px;">
-            <div style="background: var(--primary); padding: 8px 12px; border-radius: 8px; font-size: 11px; font-weight: bold;">Tomorrow 11:30 AM</div>
-            <div style="background: var(--dark-card); padding: 8px 12px; border-radius: 8px; font-size: 11px;">Tomorrow 2:00 PM</div>
-            <div style="background: var(--dark-card); padding: 8px 12px; border-radius: 8px; font-size: 11px;">Thu 4:30 PM</div>
+
+          <!-- Unlocked State -->
+          <div class="unlocked-phone-bar" id="unlockedBar">
+            <div style="font-size: 10.5px; font-weight: 800; color: var(--success); text-transform: uppercase;">✓ Contact Unlocked via Telebirr</div>
+            <div class="unlocked-phone-num" id="unlockedPhoneText">+251 91 142 8890</div>
+            <div class="action-call-row">
+              <button class="call-btn primary" onclick="showToast('Calling Verified Broker...')">📞 Call Agent</button>
+              <button class="call-btn secondary" onclick="showToast('WhatsApp Chat Opened')">💬 WhatsApp</button>
+            </div>
           </div>
+
         </div>
-        <button class="modal-btn" onclick="confirmTestDrive()">Confirm Reservation</button>
+
       </div>
     </div>
+
+    <!-- Telebirr Micro-Payment USSD Simulator Modal -->
+    <div class="modal-backdrop" id="telebirrModal">
+      <div class="sheet-card" style="text-align: center;">
+        <div class="sheet-drag-handle"></div>
+        <div style="width: 52px; height: 52px; border-radius: 50%; background: var(--telebirr-bg); color: var(--telebirr); margin: 0 auto 10px auto; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 900;">
+          TB
+        </div>
+        <div class="sheet-title">Telebirr Quick Pay</div>
+        <p style="font-size: 12px; color: var(--dark-text-secondary); margin: 4px 0 14px 0;">
+          Pay <strong>20 ETB</strong> to reveal verified broker phone number:
+        </p>
+        <div style="background: var(--dark-card); padding: 12px; border-radius: 14px; margin-bottom: 14px; text-align: left; font-size: 11.5px;">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+            <span style="color: var(--dark-text-muted);">Merchant:</span>
+            <strong>ALLSELL Technologies</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+            <span style="color: var(--dark-text-muted);">Item:</span>
+            <span>Broker Lead Reveal Token</span>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span style="color: var(--dark-text-muted);">Amount:</span>
+            <strong style="color: var(--primary);">20.00 ETB</strong>
+          </div>
+        </div>
+        <button class="telebirr-unlock-btn" onclick="executeTelebirrPayment()">
+          Confirm & Pay 20 ETB (Simulated USSD)
+        </button>
+        <button class="close-icon-btn" style="margin-top: 10px; font-size: 12px;" onclick="closeModal('telebirrModal')">
+          Cancel
+        </button>
+      </div>
+    </div>
+
+    <!-- Auditor & Institutional Portal Overlay -->
+    <div class="detail-overlay" id="portalOverlay">
+      <div class="detail-top-nav">
+        <div class="detail-circle-btn" onclick="closePortalOverlay()">✕</div>
+        <div style="font-weight: 800; font-size: 14px; color: white; display: flex; align-items: center; gap: 4px;">
+          <span>🏛️</span> Institutional Portals
+        </div>
+      </div>
+      <div class="detail-body" style="padding-top: 60px;">
+        
+        <!-- Role Switcher -->
+        <div class="role-toggle-pill">
+          <button class="role-btn active" id="roleCustomer" onclick="switchRole('customer')">Customer</button>
+          <button class="role-btn" id="roleAgent" onclick="switchRole('agent')">Broker Dashboard</button>
+          <button class="role-btn" id="roleAuditor" onclick="switchRole('auditor')">Gov / Auditor</button>
+        </div>
+
+        <div id="portalContent">
+          <!-- Dynamically swapped between Customer, Agent, Auditor -->
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div class="toast-msg" id="toastMsg">Notification message</div>
+
   </div>
 
   <script>
-    // Car Catalog with verified stock image URLs from Unsplash
-    const cars = [
+    // --- Data Models for Real Estate and Cars (Ethiopian Market) ---
+    const propertiesData = [
       {
-        id: 'c1',
-        brand: 'Porsche',
-        model: '911 GT3 RS (992)',
-        year: 2024,
-        price: 289900,
-        hp: 518,
-        accel: '3.0s',
-        topSpeed: '184 mph',
-        mileage: '1,240 mi',
-        fuel: 'Gasoline',
-        image: 'https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?auto=format&fit=crop&w=1200&q=80',
-        deal: true
+        id: 'prop-1',
+        title: 'Modern Luxury Villa in Bole Atlas',
+        listingType: 'FOR SALE',
+        propertyType: 'VILLA',
+        price: 'ETB 28,500,000',
+        subCity: 'Bole',
+        location: 'Bole Atlas, Addis Ababa',
+        specsText: '4 Bed · 5 Bath · 380 m²',
+        beds: 4,
+        baths: 5,
+        area: '380 m²',
+        compound: '500 m²',
+        waterTank: 'Yes (5,000L)',
+        generator: 'Yes (Automatic)',
+        image: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=800&q=80',
+        verified: true,
+        agent: {
+          name: 'Abebe Demisse',
+          agency: 'Bole Premier Realty',
+          tin: '0048192841',
+          phone: '+251 91 142 8890'
+        },
+        desc: 'Stunning luxury villa located in the prestigious Bole Atlas neighborhood. Features high-end finishes, modern European kitchen, backup generator, 5000L water reserve, and 24/7 security booth.'
       },
       {
-        id: 'c2',
-        brand: 'Tesla',
-        model: 'Model S Plaid Tri-Motor',
-        year: 2024,
-        price: 89990,
-        hp: 1020,
-        accel: '1.99s',
-        topSpeed: '200 mph',
-        mileage: '3,800 mi',
-        fuel: 'Electric',
-        image: 'https://images.unsplash.com/photo-1560958089-b8a1929cea89?auto=format&fit=crop&w=1200&q=80',
-        deal: false
+        id: 'prop-2',
+        title: 'CMC Sunshine Luxury Apartment',
+        listingType: 'FOR SALE',
+        propertyType: 'APARTMENT',
+        price: 'ETB 14,200,000',
+        subCity: 'Yeka',
+        location: 'CMC Sunshine, Addis Ababa',
+        specsText: '3 Bed · 2 Bath · 165 m²',
+        beds: 3,
+        baths: 2,
+        area: '165 m²',
+        compound: 'Gated Site',
+        waterTank: 'Central Reserve',
+        generator: 'Standby Generator',
+        image: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=800&q=80',
+        verified: true,
+        agent: {
+          name: 'Selamawit Tadesse',
+          agency: 'Addis Living Real Estate',
+          tin: '0059281723',
+          phone: '+251 92 345 6789'
+        },
+        desc: 'Brand new 3-bedroom apartment on the 6th floor with breathtaking mountain views. Modern elevator, designated underground parking, and fiber optic connection ready.'
       },
       {
-        id: 'c3',
-        brand: 'Mercedes-Benz',
-        model: 'AMG GT 63 S Coupe',
-        year: 2024,
-        price: 175900,
-        hp: 577,
-        accel: '3.1s',
-        topSpeed: '196 mph',
-        mileage: '2,600 mi',
-        fuel: 'Gasoline',
-        image: 'https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?auto=format&fit=crop&w=1200&q=80',
-        deal: true
+        id: 'prop-3',
+        title: 'Diplomatic Residence in Old Airport',
+        listingType: 'FOR RENT',
+        propertyType: 'VILLA',
+        price: 'ETB 145,000 / mo',
+        subCity: 'Nifas Silk',
+        location: 'Old Airport, Addis Ababa',
+        specsText: '5 Bed · 5 Bath · 450 m²',
+        beds: 5,
+        baths: 5,
+        area: '450 m²',
+        compound: '800 m²',
+        waterTank: 'Yes (10,000L)',
+        generator: 'Heavy Industrial',
+        image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80',
+        verified: true,
+        agent: {
+          name: 'Yonas Gebre',
+          agency: 'Capital Diplomatic Homes',
+          tin: '0032918820',
+          phone: '+251 93 456 7890'
+        },
+        desc: 'Secured high-commission diplomatic residence close to the International Community School (ICS). Expansive manicured garden, guard house, and separate service quarters.'
       },
       {
-        id: 'c4',
-        brand: 'BMW',
-        model: 'M4 Competition xDrive',
-        year: 2023,
-        price: 86500,
-        hp: 503,
-        accel: '3.4s',
-        topSpeed: '180 mph',
-        mileage: '7,400 mi',
-        fuel: 'Gasoline',
-        image: 'https://images.unsplash.com/photo-1555215695-3004980ad54e?auto=format&fit=crop&w=1200&q=80',
-        deal: false
+        id: 'prop-4',
+        title: 'Modern Condominium in Kazanchis',
+        listingType: 'FOR RENT',
+        propertyType: 'CONDO',
+        price: 'ETB 45,000 / mo',
+        subCity: 'Kirkos',
+        location: 'Kazanchis, Addis Ababa',
+        specsText: '2 Bed · 2 Bath · 110 m²',
+        beds: 2,
+        baths: 2,
+        area: '110 m²',
+        compound: 'Condo Site',
+        waterTank: 'Site Tank',
+        generator: 'Lift Backup',
+        image: 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80',
+        verified: true,
+        agent: {
+          name: 'Abebe Demisse',
+          agency: 'Bole Premier Realty',
+          tin: '0048192841',
+          phone: '+251 91 142 8890'
+        },
+        desc: 'Fully furnished 2-bed flat situated in the heart of Kazanchis near UNECA. Ideal for international expats and NGO professionals.'
       },
       {
-        id: 'c5',
-        brand: 'Audi',
-        model: 'RS6 Avant Performance',
-        year: 2024,
-        price: 125800,
-        hp: 621,
-        accel: '3.3s',
-        topSpeed: '190 mph',
-        mileage: '4,100 mi',
-        fuel: 'Gasoline',
-        image: 'https://images.unsplash.com/photo-1603584173870-7f23fdae1b7a?auto=format&fit=crop&w=1200&q=80',
-        deal: false
+        id: 'prop-5',
+        title: 'Executive Penthouse in Sarbet',
+        listingType: 'FOR SALE',
+        propertyType: 'PENTHOUSE',
+        price: 'ETB 24,000,000',
+        subCity: 'Nifas Silk',
+        location: 'Sarbet, Addis Ababa',
+        specsText: '3 Bed · 3 Bath · 230 m²',
+        beds: 3,
+        baths: 3,
+        area: '230 m²',
+        compound: 'Private Roof Deck',
+        waterTank: 'Dual Tanks',
+        generator: 'Full Backup',
+        image: 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80',
+        verified: true,
+        agent: {
+          name: 'Selamawit Tadesse',
+          agency: 'Addis Living Real Estate',
+          tin: '0059281723',
+          phone: '+251 92 345 6789'
+        },
+        desc: 'Panoramic top-floor penthouse with 360-degree views of Addis Ababa. Modern jacuzzi, smart home automated lights, and 2 dedicated parking bays.'
       },
       {
-        id: 'c6',
-        brand: 'Lamborghini',
-        model: 'Huracán EVO Spyder',
-        year: 2023,
-        price: 298000,
-        hp: 631,
-        accel: '2.8s',
-        topSpeed: '202 mph',
-        mileage: '2,900 mi',
-        fuel: 'Gasoline',
-        image: 'https://images.unsplash.com/photo-1544829099-b9a0c07fad1a?auto=format&fit=crop&w=1200&q=80',
-        deal: true
-      },
-      {
-        id: 'c7',
-        brand: 'Land Rover',
-        model: 'Range Rover SV Autobiography',
-        year: 2024,
-        price: 218000,
-        hp: 606,
-        accel: '4.3s',
-        topSpeed: '162 mph',
-        mileage: '3,200 mi',
-        fuel: 'Gasoline',
-        image: 'https://images.unsplash.com/photo-1563720223185-11003d516935?auto=format&fit=crop&w=1200&q=80',
-        deal: false
-      },
-      {
-        id: 'c8',
-        brand: 'Ford Performance',
-        model: 'Mustang Dark Horse',
-        year: 2024,
-        price: 63200,
-        hp: 500,
-        accel: '3.9s',
-        topSpeed: '168 mph',
-        mileage: '1,850 mi',
-        fuel: 'Gasoline',
-        image: 'https://images.unsplash.com/photo-1584345604476-8ec5e12e42dd?auto=format&fit=crop&w=1200&q=80',
-        deal: true
+        id: 'prop-6',
+        title: 'Commercial Complex in Bole Medhanialem',
+        listingType: 'FOR RENT',
+        propertyType: 'COMMERCIAL',
+        price: 'ETB 320,000 / mo',
+        subCity: 'Bole',
+        location: 'Bole Medhanialem, Addis Ababa',
+        specsText: '600 m² · 8 Parking Slots',
+        beds: 0,
+        baths: 4,
+        area: '600 m²',
+        compound: 'Commercial Center',
+        waterTank: '15,000L',
+        generator: '3-Phase High KVA',
+        image: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80',
+        verified: true,
+        agent: {
+          name: 'Yonas Gebre',
+          agency: 'Capital Diplomatic Homes',
+          tin: '0032918820',
+          phone: '+251 93 456 7890'
+        },
+        desc: 'Prime roadside office building space right opposite Bole Medhanialem. High footfall, ready for bank headquarters or corporate offices.'
       }
     ];
 
-    let favorites = new Set(['c1', 'c2']);
-    let currentBrand = 'All';
-    let activeCarForEmi = cars[0];
-
-    function renderCars() {
-      const list = document.getElementById('carsList');
-      const filtered = currentBrand === 'All'
-        ? cars
-        : cars.filter(c => c.brand.toLowerCase().includes(currentBrand.toLowerCase()));
-
-      document.getElementById('carCountLabel').innerText = `${filtered.length} vehicles`;
-
-      list.innerHTML = filtered.map(car => `
-        <div class="car-card" onclick="openDetails('${car.id}')">
-          <div class="card-img-wrap">
-            <img src="${car.image}" alt="${car.model}" loading="lazy">
-            <div class="fav-btn ${favorites.has(car.id) ? 'active' : ''}" onclick="toggleFav(event, '${car.id}')">
-              ${favorites.has(car.id) ? '❤️' : '🤍'}
-            </div>
-            <div class="telemetry-row">
-              <div class="tel-chip">⚡ <span>${car.accel}</span> 0-60</div>
-              <div class="tel-chip">🏎️ <span>${car.hp}</span> HP</div>
-              <div class="tel-chip">🚀 <span>${car.topSpeed}</span></div>
-            </div>
-          </div>
-          <div class="card-body">
-            <div class="card-make">${car.year} • ${car.brand.toUpperCase()}</div>
-            <div class="card-title">${car.model}</div>
-            <div class="card-specs-row">
-              <div class="card-spec-pill">📍 Beverly Hills</div>
-              <div class="card-spec-pill">⏱️ ${car.mileage}</div>
-              <div class="card-spec-pill">${car.fuel}</div>
-            </div>
-            <div class="card-footer">
-              <div>
-                <div class="price-num">$${car.price.toLocaleString()}</div>
-                <div class="price-emi">Est. $${Math.round(car.price * 0.012).toLocaleString()}/mo</div>
-              </div>
-              <button style="background: rgba(255,94,20,0.12); color: var(--primary); border: none; padding: 6px 12px; border-radius: 8px; font-weight: 800; font-size: 11px; cursor: pointer;" onclick="openEmi(event, '${car.id}')">
-                Finance EMI ▾
-              </button>
-            </div>
-          </div>
-        </div>
-      `).join('');
-    }
-
-    function toggleFav(e, id) {
-      e.stopPropagation();
-      if (favorites.has(id)) {
-        favorites.delete(id);
-      } else {
-        favorites.add(id);
+    const carsData = [
+      {
+        id: 'car-1',
+        title: 'Toyota Land Cruiser Prado TX-L',
+        listingType: 'FOR SALE',
+        condition: 'BRAND NEW',
+        price: 'ETB 14,800,000',
+        subCity: 'Bole',
+        location: 'Bole, Addis Ababa',
+        specsText: '2024 · Auto · Diesel · 0 km',
+        year: 2024,
+        transmission: 'Automatic',
+        fuel: 'Diesel',
+        mileage: '0 km',
+        engine: '2.8L Turbo',
+        image: 'https://images.unsplash.com/photo-1594502184342-2e12f877aa73?auto=format&fit=crop&w=800&q=80',
+        verified: true,
+        agent: {
+          name: 'Henok Girma',
+          agency: 'Addis Motor Vault',
+          tin: '0019283741',
+          phone: '+251 91 199 4433'
+        },
+        desc: 'Brand new 2024 Toyota Land Cruiser Prado TX-L. Ethiopian customs fully cleared, plate registration ready, leather interior, sunroof, and 360 camera.'
+      },
+      {
+        id: 'car-2',
+        title: 'Toyota RAV4 Hybrid Limited',
+        listingType: 'FOR SALE',
+        condition: 'FOREIGN USED',
+        price: 'ETB 7,400,000',
+        subCity: 'Kirkos',
+        location: 'Sarbet, Addis Ababa',
+        specsText: '2022 · Auto · Hybrid · 24k km',
+        year: 2022,
+        transmission: 'Automatic',
+        fuel: 'Hybrid',
+        mileage: '24,000 km',
+        engine: '2.5L Hybrid',
+        image: 'https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=800&q=80',
+        verified: true,
+        agent: {
+          name: 'Henok Girma',
+          agency: 'Addis Motor Vault',
+          tin: '0019283741',
+          phone: '+251 91 199 4433'
+        },
+        desc: 'Extremely clean Toyota RAV4 Hybrid with genuine mileage. Excellent fuel efficiency in Addis traffic, AWD, Apple CarPlay, and mint condition.'
+      },
+      {
+        id: 'car-3',
+        title: 'Suzuki Dzire GLX Automatic',
+        listingType: 'FOR SALE',
+        condition: 'BRAND NEW',
+        price: 'ETB 3,850,000',
+        subCity: 'Yeka',
+        location: 'CMC, Addis Ababa',
+        specsText: '2024 · Auto · Petrol · 0 km',
+        year: 2024,
+        transmission: 'Automatic',
+        fuel: 'Petrol',
+        mileage: '0 km',
+        engine: '1.2L VVT',
+        image: 'https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&w=800&q=80',
+        verified: true,
+        agent: {
+          name: 'Dawit Bekele',
+          agency: 'Habesha Auto Brokers',
+          tin: '0081726354',
+          phone: '+251 91 234 5678'
+        },
+        desc: 'Best-selling economic sedan in Ethiopia. Zero kilometers, push start button, digital climate control, alloy wheels, and warranty included.'
+      },
+      {
+        id: 'car-4',
+        title: 'Hyundai Tucson 2.0 Signature',
+        listingType: 'FOR SALE',
+        condition: 'ETHIOPIAN USED',
+        price: 'ETB 5,900,000',
+        subCity: 'Bole',
+        location: 'Bole Medhanialem, Addis Ababa',
+        specsText: '2021 · Auto · Petrol · 38k km',
+        year: 2021,
+        transmission: 'Automatic',
+        fuel: 'Petrol',
+        mileage: '38,000 km',
+        engine: '2.0L MPI',
+        image: 'https://images.unsplash.com/photo-1583121274602-3e2820c69888?auto=format&fit=crop&w=800&q=80',
+        verified: true,
+        agent: {
+          name: 'Dawit Bekele',
+          agency: 'Habesha Auto Brokers',
+          tin: '0081726354',
+          phone: '+251 91 234 5678'
+        },
+        desc: 'Well maintained by single owner. Serviced exclusively at Marathon Motors Addis Ababa. Panoramic roof and leather seats.'
+      },
+      {
+        id: 'car-5',
+        title: 'Mercedes-Benz G63 AMG Edition',
+        listingType: 'FOR SALE',
+        condition: 'BRAND NEW',
+        price: 'ETB 34,000,000',
+        subCity: 'Bole',
+        location: 'Bole Atlas, Addis Ababa',
+        specsText: '2023 · Auto · Petrol · 1,200 km',
+        year: 2023,
+        transmission: 'Automatic',
+        fuel: 'Petrol V8',
+        mileage: '1,200 km',
+        engine: '4.0L Bi-Turbo V8',
+        image: 'https://images.unsplash.com/photo-1520031441872-265e4ff70366?auto=format&fit=crop&w=800&q=80',
+        verified: true,
+        agent: {
+          name: 'Henok Girma',
+          agency: 'Addis Motor Vault',
+          tin: '0019283741',
+          phone: '+251 91 199 4433'
+        },
+        desc: 'Ultra-exclusive G-Wagon in Magno Matte Black. Burmester premium sound, carbon fiber package, red brake calipers, and VIP security glass.'
+      },
+      {
+        id: 'car-6',
+        title: 'Toyota Hilux Double Cab 4x4',
+        listingType: 'FOR SALE',
+        condition: 'FOREIGN USED',
+        price: 'ETB 8,200,000',
+        subCity: 'Nifas Silk',
+        location: 'Gotera, Addis Ababa',
+        specsText: '2022 · Manual · Diesel · 32k km',
+        year: 2022,
+        transmission: 'Manual',
+        fuel: 'Diesel',
+        mileage: '32,000 km',
+        engine: '2.4L D-4D',
+        image: 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=800&q=80',
+        verified: true,
+        agent: {
+          name: 'Dawit Bekele',
+          agency: 'Habesha Auto Brokers',
+          tin: '0081726354',
+          phone: '+251 91 234 5678'
+        },
+        desc: 'Rugged Toyota Hilux Double Cab with heavy-duty canopy and tow bar. Ideal for construction logistics and regional travel.'
       }
-      document.getElementById('favBadge').innerText = favorites.size;
-      renderCars();
+    ];
+
+    // --- State Variables ---
+    let currentCategory = 'houses'; // 'houses' or 'cars'
+    let currentSubCity = 'All Sub-cities';
+    let searchQuery = '';
+    let unlockedContacts = new Set();
+    let savedListings = new Set(['prop-1', 'car-1']);
+    let activeDetailItem = null;
+    let isLightMode = false;
+
+    // --- Render Functions ---
+    function renderGrid() {
+      const grid = document.getElementById('listingGrid');
+      const data = currentCategory === 'houses' ? propertiesData : carsData;
+
+      // Filter by subcity and search
+      const filtered = data.filter(item => {
+        const matchesSubCity = currentSubCity === 'All Sub-cities' || item.subCity.toLowerCase() === currentSubCity.toLowerCase();
+        const matchesQuery = !searchQuery || item.title.toLowerCase().includes(searchQuery.toLowerCase()) || item.location.toLowerCase().includes(searchQuery.toLowerCase());
+        return matchesSubCity && matchesQuery;
+      });
+
+      document.getElementById('feedCounterLabel').innerText = `Showing ${filtered.length} listings`;
+      document.getElementById('feedSectionTitle').innerText = `${currentCategory === 'houses' ? 'Houses' : 'Cars'} in ${currentSubCity === 'All Sub-cities' ? 'Addis Ababa' : currentSubCity}`;
+
+      if (filtered.length === 0) {
+        grid.innerHTML = `
+          <div style="grid-column: span 2; text-align: center; padding: 40px 10px; color: var(--dark-text-muted);">
+            <div style="font-size: 32px; margin-bottom: 8px;">🔍</div>
+            <div style="font-weight: 700; font-size: 14px;">No listings found</div>
+            <div style="font-size: 11px; margin-top: 4px;">Try changing the sub-city filter or search term.</div>
+          </div>
+        `;
+        return;
+      }
+
+      grid.innerHTML = filtered.map(item => {
+        const isSaved = savedListings.has(item.id);
+        const tag = currentCategory === 'houses' ? item.listingType : item.condition;
+
+        return `
+          <div class="listing-card" onclick="openDetails('${item.id}')">
+            <div class="card-thumb-wrap">
+              <img src="${item.image}" alt="${item.title}" loading="lazy">
+              <div class="tag-badge">${tag}</div>
+              <div class="fav-heart-btn ${isSaved ? 'active' : ''}" onclick="toggleFav(event, '${item.id}')">
+                ${isSaved ? '❤️' : '🤍'}
+              </div>
+            </div>
+            <div class="card-info">
+              <div class="card-verified-row">
+                <span>✓</span> VERIFIED
+              </div>
+              <div class="card-price">${item.price}</div>
+              <div class="card-title">${item.title}</div>
+              <div class="card-specs">${item.specsText}</div>
+              <div class="card-loc">
+                <span>📍</span> ${item.location.split(',')[0]}
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
     }
 
-    function filterBrand(brand, el) {
-      currentBrand = brand;
-      document.querySelectorAll('.brand-pill').forEach(b => b.classList.remove('active'));
-      if (el) el.classList.add('active');
-      renderCars();
+    // --- Category Switching ---
+    function switchCategory(cat) {
+      currentCategory = cat;
+      document.getElementById('tabHouses').classList.toggle('active', cat === 'houses');
+      document.getElementById('tabCars').classList.toggle('active', cat === 'cars');
+
+      const bannerHeadline = document.getElementById('promoBannerHeadline');
+      if (cat === 'houses') {
+        bannerHeadline.innerHTML = 'Luxury Bole Villas &<br>Verified Sunshine Apartments';
+      } else {
+        bannerHeadline.innerHTML = 'Ethiopian Customs Cleared<br>Toyota Prado & Land Cruisers';
+      }
+
+      renderGrid();
     }
 
-    function openEmi(e, carId) {
+    // --- Sub-City Selection ---
+    function openLocationPicker() {
+      document.getElementById('locationModal').classList.add('active');
+    }
+
+    function selectSubCity(sub) {
+      currentSubCity = sub;
+      document.getElementById('activeLocationLabel').innerText = sub === 'All Sub-cities' ? 'Addis Ababa' : sub;
+      
+      document.querySelectorAll('.subcity-pill').forEach(pill => {
+        pill.classList.toggle('active', pill.innerText === sub);
+      });
+
+      closeModal('locationModal');
+      renderGrid();
+      showToast(`Filtered for ${sub}`);
+    }
+
+    // --- Search Input ---
+    function handleSearch(val) {
+      searchQuery = val.trim();
+      renderGrid();
+    }
+
+    // --- Details Overlay View ---
+    function openDetails(id) {
+      const allData = [...propertiesData, ...carsData];
+      const item = allData.find(i => i.id === id);
+      if (!item) return;
+
+      activeDetailItem = item;
+      const isCar = !!item.year;
+
+      document.getElementById('detailImg').src = item.image;
+      document.getElementById('detailBadge').innerText = isCar ? item.condition : item.listingType;
+      document.getElementById('detailPrice').innerText = item.price;
+      document.getElementById('detailTitle').innerText = item.title;
+      document.getElementById('detailLocation').innerText = '📍 ' + item.location;
+      document.getElementById('detailDesc').innerText = item.desc;
+
+      // Agent details
+      document.getElementById('agentNameLabel').innerHTML = `${item.agent.name} <span style="color:var(--verified-gold); font-size: 11px;">✓ Verified</span>`;
+      document.getElementById('agentTinLabel').innerText = `TIN: ${item.agent.tin} · ${item.agent.agency}`;
+      document.getElementById('agentAvatarLetter').innerText = item.agent.name[0];
+
+      // Dynamic Specs Table
+      const specsGrid = document.getElementById('detailSpecsGrid');
+      if (isCar) {
+        specsGrid.innerHTML = `
+          <div class="spec-gauge-card">
+            <div class="spec-gauge-val">${item.year}</div>
+            <div class="spec-gauge-lbl">Model Year</div>
+          </div>
+          <div class="spec-gauge-card">
+            <div class="spec-gauge-val">${item.transmission}</div>
+            <div class="spec-gauge-lbl">Gearbox</div>
+          </div>
+          <div class="spec-gauge-card">
+            <div class="spec-gauge-val">${item.fuel}</div>
+            <div class="spec-gauge-lbl">Fuel Type</div>
+          </div>
+        `;
+      } else {
+        specsGrid.innerHTML = `
+          <div class="spec-gauge-card">
+            <div class="spec-gauge-val">${item.beds}</div>
+            <div class="spec-gauge-lbl">Bedrooms</div>
+          </div>
+          <div class="spec-gauge-card">
+            <div class="spec-gauge-val">${item.baths}</div>
+            <div class="spec-gauge-lbl">Bathrooms</div>
+          </div>
+          <div class="spec-gauge-card">
+            <div class="spec-gauge-val">${item.area}</div>
+            <div class="spec-gauge-lbl">Floor Area</div>
+          </div>
+        `;
+      }
+
+      // Check contact unlocked status
+      const isUnlocked = unlockedContacts.has(item.id);
+      document.getElementById('paywallContainer').style.display = isUnlocked ? 'none' : 'block';
+      document.getElementById('unlockedBar').style.display = isUnlocked ? 'block' : 'none';
+      document.getElementById('unlockedPhoneText').innerText = item.agent.phone;
+
+      // Update detail fav icon
+      document.getElementById('detailFavBtn').innerText = savedListings.has(item.id) ? '❤️' : '🤍';
+
+      document.getElementById('detailOverlay').classList.add('active');
+    }
+
+    function closeDetailOverlay() {
+      document.getElementById('detailOverlay').classList.remove('active');
+    }
+
+    // --- Telebirr Monetized Lead Flow ---
+    function openTelebirrPrompt() {
+      document.getElementById('telebirrModal').classList.add('active');
+    }
+
+    function executeTelebirrPayment() {
+      closeModal('telebirrModal');
+      showToast('Processing Telebirr USSD Payment (20 ETB)...');
+
+      setTimeout(() => {
+        if (activeDetailItem) {
+          unlockedContacts.add(activeDetailItem.id);
+          document.getElementById('paywallContainer').style.display = 'none';
+          document.getElementById('unlockedBar').style.display = 'block';
+          showToast('Payment Verified! Agent contact revealed.');
+        }
+      }, 900);
+    }
+
+    // --- Saved / Favorites Toggle ---
+    function toggleFav(e, id) {
       if (e) e.stopPropagation();
-      activeCarForEmi = cars.find(c => c.id === carId) || cars[0];
-      updateEmi();
-      document.getElementById('emiModal').classList.add('active');
+      if (savedListings.has(id)) {
+        savedListings.delete(id);
+        showToast('Removed from saved');
+      } else {
+        savedListings.add(id);
+        showToast('Saved to your favorites ❤️');
+      }
+      document.getElementById('favBadge').innerText = savedListings.size;
+      renderGrid();
     }
 
-    function updateEmi() {
-      const downPct = parseInt(document.getElementById('downSlider').value);
-      const months = parseInt(document.getElementById('termSlider').value);
-      document.getElementById('downVal').innerText = downPct;
-      document.getElementById('termVal').innerText = `${months} Months`;
-
-      const downAmt = activeCarForEmi.price * (downPct / 100);
-      document.getElementById('downAmt').innerText = `$${Math.round(downAmt).toLocaleString()}`;
-
-      const principal = activeCarForEmi.price - downAmt;
-      const rate = (0.059) / 12;
-      const emi = (principal * rate * Math.pow(1 + rate, months)) / (Math.pow(1 + rate, months) - 1);
-      document.getElementById('emiResult').innerText = `$${Math.round(emi).toLocaleString()}/mo`;
-      document.getElementById('emiSubtitle').innerText = `${months} months loan @ 5.9% APR for ${activeCarForEmi.model}`;
+    function toggleDetailFav() {
+      if (!activeDetailItem) return;
+      toggleFav(null, activeDetailItem.id);
+      document.getElementById('detailFavBtn').innerText = savedListings.has(activeDetailItem.id) ? '❤️' : '🤍';
     }
 
+    // --- Institutional & Auditor Portals Screen ---
+    function navTo(screen) {
+      document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
+      
+      if (screen === 'explore') {
+        document.getElementById('navExplore').classList.add('active');
+        closePortalOverlay();
+        resetToHome();
+      } else if (screen === 'favorites') {
+        document.getElementById('navFavorites').classList.add('active');
+        showFavoritesView();
+      } else if (screen === 'account') {
+        document.getElementById('navAccount').classList.add('active');
+        openPortalOverlay();
+      }
+    }
+
+    function showFavoritesView() {
+      const allData = [...propertiesData, ...carsData];
+      const savedItems = allData.filter(i => savedListings.has(i.id));
+      showToast(`Showing ${savedItems.length} Saved Favorites`);
+    }
+
+    function openPortalOverlay() {
+      document.getElementById('portalOverlay').classList.add('active');
+      switchRole('customer');
+    }
+
+    function closePortalOverlay() {
+      document.getElementById('portalOverlay').classList.remove('active');
+      document.getElementById('navExplore').classList.add('active');
+    }
+
+    function switchRole(role) {
+      document.getElementById('roleCustomer').classList.toggle('active', role === 'customer');
+      document.getElementById('roleAgent').classList.toggle('active', role === 'agent');
+      document.getElementById('roleAuditor').classList.toggle('active', role === 'auditor');
+
+      const container = document.getElementById('portalContent');
+
+      if (role === 'customer') {
+        container.innerHTML = `
+          <div style="background: var(--dark-card); padding: 18px; border-radius: 20px; border: 1px solid var(--dark-border); text-align: center; margin-bottom: 14px;">
+            <div style="width: 58px; height: 58px; border-radius: 50%; background: var(--primary); color: #000; font-size: 22px; font-weight: 900; margin: 0 auto 10px auto; display: flex; align-items: center; justify-content: center;">
+              P
+            </div>
+            <h3 style="font-size: 16px; font-weight: 800;">Prem Kumar</h3>
+            <p style="font-size: 11px; color: var(--dark-text-muted);">+251 91 100 2233 · Customer Account</p>
+            <div style="display: flex; justify-content: center; gap: 12px; margin-top: 14px;">
+              <div style="background: var(--dark-surface); padding: 8px 14px; border-radius: 12px; font-size: 11px;">
+                <strong>${savedListings.size}</strong> Saved
+              </div>
+              <div style="background: var(--dark-surface); padding: 8px 14px; border-radius: 12px; font-size: 11px;">
+                <strong>${unlockedContacts.size}</strong> Unlocks
+              </div>
+            </div>
+          </div>
+          <button class="telebirr-unlock-btn" style="background: var(--dark-card); border: 1px solid var(--dark-border); color: #FFF; margin-bottom: 8px;" onclick="showToast('Switched language to Amharic (አማርኛ)')">
+            🌐 Language: English (Change to አማርኛ)
+          </button>
+        `;
+      } else if (role === 'agent') {
+        container.innerHTML = `
+          <div class="agent-kyc-card" style="margin-top: 0; margin-bottom: 14px; border-color: var(--verified-gold);">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span class="promo-badge" style="background: var(--verified-gold); color: #000;">TIN Verified Broker</span>
+              <span style="font-size: 10px; color: var(--success); font-weight: 800;">● Active License</span>
+            </div>
+            <h3 style="font-size: 16px; font-weight: 800; margin-top: 6px;">Bole Premier Realty (Abebe D.)</h3>
+            <div class="agent-tin">TIN: 0048192841 · National ID Verified ✓</div>
+          </div>
+
+          <div class="auditor-kpi-grid">
+            <div class="kpi-stat-card">
+              <div class="kpi-title">Active Listings</div>
+              <div class="kpi-val">14 Units</div>
+            </div>
+            <div class="kpi-stat-card">
+              <div class="kpi-title">Paid Lead Reveals</div>
+              <div class="kpi-val">86 Leads</div>
+            </div>
+            <div class="kpi-stat-card">
+              <div class="kpi-title">Earned Commission</div>
+              <div class="kpi-val">ETB 420K</div>
+            </div>
+            <div class="kpi-stat-card">
+              <div class="kpi-title">KYC Rating</div>
+              <div class="kpi-val" style="color: var(--success);">4.9 ★</div>
+            </div>
+          </div>
+
+          <button class="telebirr-unlock-btn" style="background: var(--primary); color: #000;" onclick="openAddListingModal()">
+            + Post New House or Car
+          </button>
+        `;
+      } else if (role === 'auditor') {
+        container.innerHTML = `
+          <div style="background: rgba(0, 119, 254, 0.12); border: 1px solid var(--telebirr); padding: 12px; border-radius: 14px; margin-bottom: 14px;">
+            <div style="font-size: 11px; font-weight: 800; color: var(--telebirr); display: flex; align-items: center; gap: 4px;">
+              <span>🏛️</span> ETHIOPIAN REVENUE AUTHORITY (ERA) AUDIT PORTAL
+            </div>
+            <p style="font-size: 10.5px; color: var(--dark-text-secondary); margin-top: 4px;">
+              Read-only regulatory compliance tracking for licensed real estate and automotive brokers.
+            </p>
+          </div>
+
+          <div class="auditor-kpi-grid">
+            <div class="kpi-stat-card">
+              <div class="kpi-title">Gross Volume (GTV)</div>
+              <div class="kpi-val">ETB 452.8M</div>
+            </div>
+            <div class="kpi-stat-card">
+              <div class="kpi-title">Verified Brokers</div>
+              <div class="kpi-val">1,420</div>
+            </div>
+            <div class="kpi-stat-card">
+              <div class="kpi-title">Broker Commission</div>
+              <div class="kpi-val">ETB 9.05M</div>
+            </div>
+            <div class="kpi-stat-card">
+              <div class="kpi-title">Withholding Tax (2%)</div>
+              <div class="kpi-val" style="color: var(--success);">ETB 181,000</div>
+            </div>
+          </div>
+
+          <button class="telebirr-unlock-btn" style="background: var(--telebirr); color: white;" onclick="showToast('Exporting ERA Monthly Tax Statement (PDF / CSV)...')">
+            📄 Export Monthly Regulatory Statement
+          </button>
+        `;
+      }
+    }
+
+    // --- Add Listing Modal ---
+    function openAddListingModal() {
+      showToast('Opening Listing Submission Wizard (TIN & KYC Required)...');
+      setTimeout(() => {
+        openPortalOverlay();
+        switchRole('agent');
+      }, 500);
+    }
+
+    // --- Filter Sheet ---
+    function openFilterSheet() {
+      const title = document.getElementById('filterSheetTitle');
+      const body = document.getElementById('filterSheetBody');
+      title.innerText = currentCategory === 'houses' ? 'Filter Houses & Villas' : 'Filter Cars & Vehicles';
+
+      if (currentCategory === 'houses') {
+        body.innerHTML = `
+          <div style="margin-bottom: 12px;">
+            <label style="font-size: 11.5px; font-weight: 700; color: var(--dark-text-muted);">Listing Type:</label>
+            <div style="display: flex; gap: 8px; margin-top: 6px;">
+              <button class="subcity-pill active" style="flex:1;">For Sale</button>
+              <button class="subcity-pill" style="flex:1;">For Rent</button>
+            </div>
+          </div>
+          <div style="margin-bottom: 12px;">
+            <label style="font-size: 11.5px; font-weight: 700; color: var(--dark-text-muted);">Minimum Bedrooms:</label>
+            <div style="display: flex; gap: 6px; margin-top: 6px;">
+              <button class="subcity-pill" style="padding: 6px 12px;">1+</button>
+              <button class="subcity-pill" style="padding: 6px 12px;">2+</button>
+              <button class="subcity-pill active" style="padding: 6px 12px;">3+</button>
+              <button class="subcity-pill" style="padding: 6px 12px;">4+</button>
+            </div>
+          </div>
+          <div>
+            <label style="font-size: 11.5px; font-weight: 700; color: var(--dark-text-muted);">Max Price (ETB):</label>
+            <input type="range" min="1000000" max="50000000" step="1000000" value="30000000" style="width: 100%; margin-top: 6px;">
+            <div style="display: flex; justify-content: space-between; font-size: 10px; color: var(--dark-text-muted); margin-top: 2px;">
+              <span>1M ETB</span>
+              <span style="color: var(--primary); font-weight: 800;">30M ETB</span>
+              <span>50M+ ETB</span>
+            </div>
+          </div>
+        `;
+      } else {
+        body.innerHTML = `
+          <div style="margin-bottom: 12px;">
+            <label style="font-size: 11.5px; font-weight: 700; color: var(--dark-text-muted);">Condition:</label>
+            <div style="display: flex; gap: 6px; margin-top: 6px;">
+              <button class="subcity-pill active" style="flex:1; font-size: 10px;">Brand New</button>
+              <button class="subcity-pill" style="flex:1; font-size: 10px;">Foreign Used</button>
+              <button class="subcity-pill" style="flex:1; font-size: 10px;">Eth. Used</button>
+            </div>
+          </div>
+          <div style="margin-bottom: 12px;">
+            <label style="font-size: 11.5px; font-weight: 700; color: var(--dark-text-muted);">Transmission:</label>
+            <div style="display: flex; gap: 8px; margin-top: 6px;">
+              <button class="subcity-pill active" style="flex:1;">Automatic</button>
+              <button class="subcity-pill" style="flex:1;">Manual</button>
+            </div>
+          </div>
+        `;
+      }
+
+      document.getElementById('filterModal').classList.add('active');
+    }
+
+    function applyFilters() {
+      closeModal('filterModal');
+      showToast('Filters Applied Successfully');
+    }
+
+    // --- General Utilities ---
     function closeModal(id) {
       document.getElementById(id).classList.remove('active');
     }
 
-    function openDetails(carId) {
-      const car = typeof carId === 'string' ? cars.find(c => c.id === carId) : cars[0];
-      document.getElementById('testDriveModal').classList.add('active');
+    function resetToHome() {
+      document.getElementById('searchInput').value = '';
+      searchQuery = '';
+      currentSubCity = 'All Sub-cities';
+      document.getElementById('activeLocationLabel').innerText = 'Addis Ababa';
+      renderGrid();
     }
 
-    function openSellModal() {
-      alert("✨ Sell Vehicle Wizard:\\n1. Pick stock image or paste URL\\n2. Enter model & specs\\n3. AI Smart Valuation estimates value\\n4. Tap Publish to add directly into AutoVault!");
-    }
+    function toggleTheme() {
+      isLightMode = !isLightMode;
+      const shell = document.getElementById('phoneShell');
+      const icon = document.getElementById('themeIcon');
+      const label = document.getElementById('themeLabel');
 
-    function confirmTestDrive() {
-      alert("✅ VIP Test Drive Confirmed! Our concierge specialist will have the vehicle prepared for you.");
-      closeModal('testDriveModal');
-    }
-
-    function switchTab(tab) {
-      document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-      if (tab === 'explore') document.getElementById('tabExplore').classList.add('active');
-      if (tab === 'search') {
-        document.getElementById('tabSearch').classList.add('active');
-        const q = prompt("Enter search keyword (e.g. Porsche, Plaid, V8, 500 HP):", "Porsche");
-        if (q) filterBrand(q);
-      }
-      if (tab === 'saved') {
-        document.getElementById('tabSaved').classList.add('active');
-        alert(`🏎️ Garage: ${favorites.size} saved vehicles ready for side-by-side spec comparison!`);
-      }
-      if (tab === 'profile') {
-        document.getElementById('tabProfile').classList.add('active');
-        alert("👤 AutoVault Premier Member: Elena Sterling\\nTier 1 Verified Buyer & Collector");
+      if (isLightMode) {
+        shell.classList.add('light-mode');
+        icon.innerText = '🌙';
+        label.innerText = 'Dark';
+      } else {
+        shell.classList.remove('light-mode');
+        icon.innerText = '☀️';
+        label.innerText = 'Light';
       }
     }
 
-    // Initial render
-    renderCars();
+    function showToast(msg) {
+      const toast = document.getElementById('toastMsg');
+      toast.innerText = msg;
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 2400);
+    }
+
+    // --- Init ---
+    renderGrid();
   </script>
 </body>
 </html>

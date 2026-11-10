@@ -6,6 +6,7 @@ import '../widgets/custom_image.dart';
 import '../widgets/loan_calculator_modal.dart';
 import '../widgets/test_drive_modal.dart';
 import '../widgets/make_offer_modal.dart';
+import '../widgets/telebirr_paywall_modal.dart';
 import 'chat_screen.dart';
 
 class CarDetailsScreen extends StatefulWidget {
@@ -603,15 +604,34 @@ class _CarDetailsScreenState extends State<CarDetailsScreen> {
                                 Expanded(
                                   child: OutlinedButton.icon(
                                     onPressed: () {
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(
-                                          content: Text('Calling ${widget.car.seller.phone}...'),
-                                          behavior: SnackBarBehavior.floating,
-                                        ),
-                                      );
+                                      if (!store.isContactUnlocked(widget.car.id)) {
+                                        TelebirrPaywallModal.show(
+                                          context,
+                                          listingId: widget.car.id,
+                                          listingTitle: widget.car.title,
+                                          agentName: widget.car.seller.name,
+                                          onUnlocked: () => setState(() {}),
+                                        );
+                                      } else {
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          SnackBar(
+                                            content: Text('Calling ${widget.car.seller.phone}...'),
+                                            behavior: SnackBarBehavior.floating,
+                                          ),
+                                        );
+                                      }
                                     },
-                                    icon: const Icon(Icons.phone_outlined, size: 16),
-                                    label: const Text('Call Seller'),
+                                    icon: Icon(
+                                      store.isContactUnlocked(widget.car.id)
+                                          ? Icons.phone_outlined
+                                          : Icons.lock_open_rounded,
+                                      size: 16,
+                                    ),
+                                    label: Text(
+                                      store.isContactUnlocked(widget.car.id)
+                                          ? 'Call Seller'
+                                          : 'Unlock Contact',
+                                    ),
                                   ),
                                 ),
                               ],

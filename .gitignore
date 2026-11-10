@@ -24,3 +24,6 @@ build/
 *.iws
 *.swp
 *.lock
+*.apk
+.vscode/
+backend/allsell.db

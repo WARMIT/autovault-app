@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import '../models/property.dart';
 import '../models/car.dart';
 import '../state/car_store.dart';
 import '../theme/app_colors.dart';
-import '../widgets/brand_selector.dart';
+import '../widgets/property_card.dart';
 import '../widgets/car_card.dart';
-import '../widgets/custom_image.dart';
 import 'car_details_screen.dart';
 
 class ExploreScreen extends StatefulWidget {
@@ -17,548 +17,87 @@ class ExploreScreen extends StatefulWidget {
 }
 
 class _ExploreScreenState extends State<ExploreScreen> {
-  final PageController _heroController = PageController(viewportFraction: 0.92);
-  int _heroIndex = 0;
-
-  final List<String> _categories = [
-    'All',
-    'Supercar',
-    'Electric',
-    'Coupe',
-    'Sedan',
-    'SUV',
-    'Convertible',
-  ];
+  final TextEditingController _searchController = TextEditingController();
 
   @override
   void dispose() {
-    _heroController.dispose();
+    _searchController.dispose();
     super.dispose();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final store = CarStoreProvider.of(context);
+  void _showLocationPicker(BuildContext context, CarStore store) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final featuredCars = store.featuredCars;
-    final dealCars = store.dealCars;
-    final electricCars = store.electricCars;
-    final allCars = store.allCars;
 
-    return Scaffold(
-      body: SafeArea(
-        bottom: false,
-        child: CustomScrollView(
-          physics: const BouncingScrollPhysics(),
-          slivers: [
-            // Top App Bar
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(20, 16, 20, 12),
-                child: Row(
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            const Icon(Icons.location_on_rounded, color: AppColors.primary, size: 14),
-                            const SizedBox(width: 4),
-                            Text(
-                              'BEVERLY HILLS, CA',
-                              style: TextStyle(
-                                color: isDark ? AppColors.darkTextMuted : AppColors.lightTextMuted,
-                                fontSize: 11,
-                                fontWeight: FontWeight.w800,
-                                letterSpacing: 1.2,
-                              ),
-                            ),
-                            const Icon(Icons.keyboard_arrow_down_rounded, size: 16),
-                          ],
-                        ),
-                        const SizedBox(height: 4),
-                        Row(
-                          children: [
-                            Text(
-                              'Auto',
-                              style: TextStyle(
-                                fontSize: 24,
-                                fontWeight: FontWeight.w900,
-                                color: isDark ? Colors.white : AppColors.lightTextPrimary,
-                                letterSpacing: -0.5,
-                              ),
-                            ),
-                            const Text(
-                              'Vault',
-                              style: TextStyle(
-                                fontSize: 24,
-                                fontWeight: FontWeight.w900,
-                                color: AppColors.primary,
-                                letterSpacing: -0.5,
-                              ),
-                            ),
-                            Container(
-                              margin: const EdgeInsets.only(left: 6),
-                              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                              decoration: BoxDecoration(
-                                color: AppColors.primary.withOpacity(0.15),
-                                borderRadius: BorderRadius.circular(6),
-                              ),
-                              child: const Text(
-                                'PRO',
-                                style: TextStyle(
-                                  color: AppColors.primary,
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.w900,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                    const Spacer(),
-                    // Theme toggle
-                    IconButton(
-                      onPressed: () => store.toggleTheme(),
-                      icon: Icon(
-                        store.isDarkMode ? Icons.light_mode_rounded : Icons.dark_mode_rounded,
-                        color: store.isDarkMode ? AppColors.accentGold : AppColors.lightTextPrimary,
-                      ),
-                    ),
-                    // Notification Bell
-                    Stack(
-                      children: [
-                        Container(
-                          decoration: BoxDecoration(
-                            color: isDark ? AppColors.darkCard : AppColors.lightCardElevated,
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
-                            ),
-                          ),
-                          child: IconButton(
-                            icon: const Icon(Icons.notifications_none_rounded, size: 22),
-                            onPressed: () {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('You have 2 new price drop alerts and 1 test drive confirmation!'),
-                                  behavior: SnackBarBehavior.floating,
-                                ),
-                              );
-                            },
-                          ),
-                        ),
-                        Positioned(
-                          right: 4,
-                          top: 4,
-                          child: Container(
-                            width: 10,
-                            height: 10,
-                            decoration: const BoxDecoration(
-                              color: AppColors.primary,
-                              shape: BoxShape.circle,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) => Container(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+        decoration: BoxDecoration(
+          color: isDark ? AppColors.charcoalCard : Colors.white,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Center(
+              child: Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: isDark ? AppColors.charcoalBorder : AppColors.cashmereBorder,
+                  borderRadius: BorderRadius.circular(10),
                 ),
               ),
             ),
-
-            // Search Bar Shortcut
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                child: InkWell(
-                  onTap: () => widget.onTabChange(1), // Switch to Search tab
-                  borderRadius: BorderRadius.circular(16),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                    decoration: BoxDecoration(
-                      color: isDark ? AppColors.darkCard : Colors.white,
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(
-                        color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(isDark ? 0.2 : 0.04),
-                          blurRadius: 10,
-                          offset: const Offset(0, 3),
-                        ),
-                      ],
-                    ),
-                    child: Row(
-                      children: [
-                        const Icon(Icons.search_rounded, color: AppColors.primary, size: 22),
-                        const SizedBox(width: 12),
-                        Text(
-                          'Search Porsche, Tesla, AMG, V8, Electric...',
-                          style: TextStyle(
-                            color: isDark ? AppColors.darkTextMuted : AppColors.lightTextMuted,
-                            fontSize: 14,
-                          ),
-                        ),
-                        const Spacer(),
-                        Container(
-                          padding: const EdgeInsets.all(6),
-                          decoration: BoxDecoration(
-                            color: isDark ? AppColors.darkSurface : AppColors.lightCardElevated,
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Icon(
-                            Icons.tune_rounded,
-                            size: 16,
-                            color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
-                          ),
-                        ),
-                      ],
-                    ),
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                const Icon(Icons.location_on_rounded, color: AppColors.primaryAmber),
+                const SizedBox(width: 8),
+                Text(
+                  'Select Addis Ababa Sub-City / Region',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w800,
+                    color: isDark ? Colors.white : AppColors.textDarkPrimary,
                   ),
                 ),
-              ),
+              ],
             ),
+            const SizedBox(height: 16),
+            Expanded(
+              child: ListView.separated(
+                itemCount: store.availableSubCities.length,
+                separatorBuilder: (_, __) => const Divider(height: 1),
+                itemBuilder: (ctx, i) {
+                  final subCity = store.availableSubCities[i];
+                  final isSelected = store.selectedSubCity == subCity;
 
-            // Hero Showcase Carousel
-            SliverToBoxAdapter(
-              child: Column(
-                children: [
-                  const SizedBox(height: 14),
-                  SizedBox(
-                    height: 220,
-                    child: PageView.builder(
-                      controller: _heroController,
-                      itemCount: featuredCars.length,
-                      onPageChanged: (idx) => setState(() => _heroIndex = idx),
-                      itemBuilder: (context, index) {
-                        final car = featuredCars[index];
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 6),
-                          child: _buildHeroCard(car, isDark),
-                        );
-                      },
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  // Dots Indicator
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: List.generate(
-                      featuredCars.length,
-                      (index) => AnimatedContainer(
-                        duration: const Duration(milliseconds: 250),
-                        margin: const EdgeInsets.symmetric(horizontal: 3),
-                        width: _heroIndex == index ? 22 : 6,
-                        height: 6,
-                        decoration: BoxDecoration(
-                          color: _heroIndex == index
-                              ? AppColors.primary
-                              : (isDark ? AppColors.darkBorder : AppColors.lightBorder),
-                          borderRadius: BorderRadius.circular(3),
-                        ),
+                  return ListTile(
+                    dense: true,
+                    contentPadding: EdgeInsets.zero,
+                    title: Text(
+                      subCity,
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: isSelected ? FontWeight.w800 : FontWeight.w500,
+                        color: isSelected
+                            ? AppColors.primaryAmber
+                            : (isDark ? Colors.white : AppColors.textDarkPrimary),
                       ),
                     ),
-                  ),
-                ],
-              ),
-            ),
-
-            // Brands Horizontal Selector
-            SliverToBoxAdapter(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 24),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Top Marques',
-                          style: TextStyle(
-                            color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
-                            fontSize: 18,
-                            fontWeight: FontWeight.w800,
-                          ),
-                        ),
-                        InkWell(
-                          onTap: () => widget.onTabChange(1),
-                          child: const Text(
-                            'View All',
-                            style: TextStyle(
-                              color: AppColors.primary,
-                              fontSize: 13,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  BrandSelector(
-                    selectedBrand: store.selectedBrand,
-                    onSelect: (brand) {
-                      store.setBrand(brand);
-                      widget.onTabChange(1); // Jump to Search tab with brand filter
+                    trailing: isSelected
+                        ? const Icon(Icons.check_circle_rounded, color: AppColors.primaryAmber, size: 20)
+                        : null,
+                    onTap: () {
+                      store.setSelectedSubCity(subCity);
+                      Navigator.of(context).pop();
                     },
-                  ),
-                ],
+                  );
+                },
               ),
-            ),
-
-            // Category Filter Pills
-            SliverToBoxAdapter(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 22),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Text(
-                      'Browse by Body Style',
-                      style: TextStyle(
-                        color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
-                        fontSize: 18,
-                        fontWeight: FontWeight.w800,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  SizedBox(
-                    height: 38,
-                    child: ListView.separated(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      scrollDirection: Axis.horizontal,
-                      itemCount: _categories.length,
-                      separatorBuilder: (_, __) => const SizedBox(width: 8),
-                      itemBuilder: (context, index) {
-                        final cat = _categories[index];
-                        final isSelected = store.selectedCategory == cat;
-                        return InkWell(
-                          onTap: () => store.setCategory(cat),
-                          borderRadius: BorderRadius.circular(20),
-                          child: AnimatedContainer(
-                            duration: const Duration(milliseconds: 200),
-                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                            decoration: BoxDecoration(
-                              color: isSelected
-                                  ? (isDark ? Colors.white : AppColors.darkBackground)
-                                  : (isDark ? AppColors.darkCard : AppColors.lightCardElevated),
-                              borderRadius: BorderRadius.circular(20),
-                              border: Border.all(
-                                color: isSelected
-                                    ? Colors.transparent
-                                    : (isDark ? AppColors.darkBorder : AppColors.lightBorder),
-                              ),
-                            ),
-                            child: Center(
-                              child: Text(
-                                cat,
-                                style: TextStyle(
-                                  color: isSelected
-                                      ? (isDark ? Colors.black : Colors.white)
-                                      : (isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary),
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: 12,
-                                ),
-                              ),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-            // Hot Deals Horizontal Carousel
-            if (dealCars.isNotEmpty) ...[
-              SliverToBoxAdapter(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 26),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: Row(
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.all(6),
-                            decoration: BoxDecoration(
-                              color: const Color(0xFFFF3366).withOpacity(0.15),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: const Icon(Icons.local_fire_department_rounded, color: Color(0xFFFF3366), size: 18),
-                          ),
-                          const SizedBox(width: 8),
-                          Text(
-                            'Hot Deals & Price Drops',
-                            style: TextStyle(
-                              color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
-                              fontSize: 18,
-                              fontWeight: FontWeight.w800,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 14),
-                    SizedBox(
-                      height: 250,
-                      child: ListView.separated(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        scrollDirection: Axis.horizontal,
-                        itemCount: dealCars.length,
-                        separatorBuilder: (_, __) => const SizedBox(width: 14),
-                        itemBuilder: (context, index) {
-                          final car = dealCars[index];
-                          return CarCard(
-                            car: car,
-                            isCompact: true,
-                            isFavorite: store.isFavorite(car.id),
-                            onFavoriteToggle: () => store.toggleFavorite(car.id),
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (ctx) => CarDetailsScreen(car: car),
-                                ),
-                              );
-                            },
-                          );
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-
-            // Pure Electric Performance Showcase
-            if (electricCars.isNotEmpty) ...[
-              SliverToBoxAdapter(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 26),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: Row(
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.all(6),
-                            decoration: BoxDecoration(
-                              color: AppColors.accentCyan.withOpacity(0.15),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: const Icon(Icons.bolt_rounded, color: AppColors.accentCyan, size: 18),
-                          ),
-                          const SizedBox(width: 8),
-                          Text(
-                            'Pure Electric Hypercars',
-                            style: TextStyle(
-                              color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
-                              fontSize: 18,
-                              fontWeight: FontWeight.w800,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 14),
-                    SizedBox(
-                      height: 250,
-                      child: ListView.separated(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        scrollDirection: Axis.horizontal,
-                        itemCount: electricCars.length,
-                        separatorBuilder: (_, __) => const SizedBox(width: 14),
-                        itemBuilder: (context, index) {
-                          final car = electricCars[index];
-                          return CarCard(
-                            car: car,
-                            isCompact: true,
-                            isFavorite: store.isFavorite(car.id),
-                            onFavoriteToggle: () => store.toggleFavorite(car.id),
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (ctx) => CarDetailsScreen(car: car),
-                                ),
-                              );
-                            },
-                          );
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-
-            // All Certified Listings Vertical Feed
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(20, 30, 20, 14),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'All Verified Inventory',
-                      style: TextStyle(
-                        color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
-                        fontSize: 18,
-                        fontWeight: FontWeight.w800,
-                      ),
-                    ),
-                    Text(
-                      '${allCars.length} vehicles',
-                      style: TextStyle(
-                        color: isDark ? AppColors.darkTextMuted : AppColors.lightTextMuted,
-                        fontSize: 13,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-
-            // Car Feed
-            SliverPadding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              sliver: SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) {
-                    final car = allCars[index];
-                    return CarCard(
-                      car: car,
-                      isFavorite: store.isFavorite(car.id),
-                      onFavoriteToggle: () => store.toggleFavorite(car.id),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (ctx) => CarDetailsScreen(car: car),
-                          ),
-                        );
-                      },
-                    );
-                  },
-                  childCount: allCars.length,
-                ),
-              ),
-            ),
-
-            const SliverToBoxAdapter(
-              child: SizedBox(height: 90),
             ),
           ],
         ),
@@ -566,158 +105,686 @@ class _ExploreScreenState extends State<ExploreScreen> {
     );
   }
 
-  Widget _buildHeroCard(Car car, bool isDark) {
-    return InkWell(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (ctx) => CarDetailsScreen(car: car)),
-        );
-      },
-      borderRadius: BorderRadius.circular(24),
-      child: Container(
+  void _showFilterSheet(BuildContext context, CarStore store) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) => Container(
+        padding: const EdgeInsets.all(24),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(24),
-          border: Border.all(
-            color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.35),
-              blurRadius: 18,
-              offset: const Offset(0, 8),
+          color: isDark ? AppColors.charcoalCard : Colors.white,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Filter Listings',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w800,
+                    color: isDark ? Colors.white : AppColors.textDarkPrimary,
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {
+                    store.setPropertyListingTypeFilter(null);
+                    store.setSelectedBrand('All Makes');
+                    store.setSelectedSubCity('All Sub-cities');
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('Reset All', style: TextStyle(color: AppColors.primaryAmber)),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            if (store.activeCategory == CategoryMode.houses) ...[
+              const Text('Listing Type', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13)),
+              const SizedBox(height: 10),
+              Row(
+                children: [
+                  ChoiceChip(
+                    label: const Text('All'),
+                    selected: store.propertyListingTypeFilter == null,
+                    selectedColor: AppColors.primaryAmber.withOpacity(0.2),
+                    onSelected: (_) => store.setPropertyListingTypeFilter(null),
+                  ),
+                  const SizedBox(width: 8),
+                  ChoiceChip(
+                    label: const Text('For Sale'),
+                    selected: store.propertyListingTypeFilter == ListingType.forSale,
+                    selectedColor: AppColors.primaryAmber.withOpacity(0.2),
+                    onSelected: (_) => store.setPropertyListingTypeFilter(ListingType.forSale),
+                  ),
+                  const SizedBox(width: 8),
+                  ChoiceChip(
+                    label: const Text('For Rent'),
+                    selected: store.propertyListingTypeFilter == ListingType.forRent,
+                    selectedColor: AppColors.primaryAmber.withOpacity(0.2),
+                    onSelected: (_) => store.setPropertyListingTypeFilter(ListingType.forRent),
+                  ),
+                ],
+              ),
+            ] else ...[
+              const Text('Popular Vehicle Brands', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13)),
+              const SizedBox(height: 10),
+              Wrap(
+                spacing: 8,
+                children: ['All Makes', 'Toyota', 'Hyundai', 'Suzuki', 'Mercedes-Benz'].map((brand) {
+                  final isSelected = store.selectedBrand == brand;
+                  return ChoiceChip(
+                    label: Text(brand),
+                    selected: isSelected,
+                    selectedColor: AppColors.primaryAmber.withOpacity(0.2),
+                    onSelected: (_) => store.setSelectedBrand(brand),
+                  );
+                }).toList(),
+              ),
+            ],
+            const SizedBox(height: 24),
+            SizedBox(
+              width: double.infinity,
+              height: 48,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.primaryAmber,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                ),
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('Apply Filter', style: TextStyle(fontWeight: FontWeight.w800, color: Colors.white)),
+              ),
             ),
           ],
         ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(24),
-          child: Stack(
-            children: [
-              // Stock Image
-              CustomImage(
-                imageUrl: car.primaryImage,
-                height: 220,
-                width: double.infinity,
-                fit: BoxFit.cover,
-              ),
-              // Gradient Overlay
-              Positioned.fill(
-                child: Container(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        Colors.transparent,
-                        Colors.black.withOpacity(0.2),
-                        Colors.black.withOpacity(0.85),
-                      ],
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                    ),
-                  ),
-                ),
-              ),
-              // Top Spotlight Badge
-              Positioned(
-                top: 14,
-                left: 14,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                  decoration: BoxDecoration(
-                    color: AppColors.primary,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: const Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(Icons.workspace_premium_rounded, color: Colors.white, size: 14),
-                      SizedBox(width: 4),
-                      Text(
-                        'FEATURED SPOTLIGHT',
-                        style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.w900),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              // Bottom Details
-              Positioned(
-                bottom: 16,
-                left: 16,
-                right: 16,
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final store = CarStoreProvider.of(context);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    final isHousesMode = store.activeCategory == CategoryMode.houses;
+    final properties = store.filteredProperties;
+    final cars = store.filteredCars;
+
+    return Scaffold(
+      backgroundColor: isDark ? AppColors.obsidianBlack : AppColors.cashmereBg,
+      body: SafeArea(
+        bottom: false,
+        child: CustomScrollView(
+          physics: const BouncingScrollPhysics(),
+          slivers: [
+            // 1. Top App Bar (Brand Logo, Location Dropdown Pill, Filter Button)
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
                 child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            '${car.year} ${car.brand}',
-                            style: const TextStyle(
-                              color: AppColors.accentCyan,
-                              fontSize: 11,
-                              fontWeight: FontWeight.w800,
-                              letterSpacing: 1.1,
+                    // Brand Logo Mark with Amber Ring Accent
+                    Row(
+                      children: [
+                        Container(
+                          width: 38,
+                          height: 38,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(color: AppColors.primaryAmber, width: 2.2),
+                            color: isDark ? AppColors.charcoalDark : Colors.white,
+                            boxShadow: [
+                              BoxShadow(
+                                color: AppColors.primaryAmber.withOpacity(0.25),
+                                blurRadius: 8,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                          child: const Center(
+                            child: Text(
+                              'A',
+                              style: TextStyle(
+                                fontFamily: 'Georgia',
+                                fontSize: 20,
+                                fontWeight: FontWeight.w900,
+                                color: AppColors.obsidianBlack,
+                              ),
                             ),
                           ),
-                          const SizedBox(height: 2),
-                          Text(
-                            car.title,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 18,
-                              fontWeight: FontWeight.w900,
+                        ),
+                        const SizedBox(width: 8),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'AllSell',
+                              style: TextStyle(
+                                fontSize: 17,
+                                fontWeight: FontWeight.w900,
+                                color: isDark ? Colors.white : AppColors.obsidianBlack,
+                                letterSpacing: -0.5,
+                              ),
                             ),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            '${car.horsepower} HP • 0-60 in ${car.acceleration0To60}s • ${car.engine}',
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
-                              color: Colors.white70,
-                              fontSize: 11,
+                            const Text(
+                              'Connect & Simplify',
+                              style: TextStyle(
+                                fontSize: 8.5,
+                                fontWeight: FontWeight.w700,
+                                color: AppColors.primaryAmber,
+                                letterSpacing: 0.8,
+                              ),
                             ),
+                          ],
+                        ),
+                      ],
+                    ),
+
+                    const Spacer(),
+
+                    // City / Sub-City Selector Pill
+                    GestureDetector(
+                      onTap: () => _showLocationPicker(context, store),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+                        decoration: BoxDecoration(
+                          color: isDark ? AppColors.charcoalCard : Colors.white,
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                            color: isDark ? AppColors.charcoalBorder : AppColors.cashmereBorder,
                           ),
-                        ],
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.04),
+                              blurRadius: 6,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(Icons.location_on_rounded, size: 14, color: AppColors.primaryAmber),
+                            const SizedBox(width: 4),
+                            ConstrainedBox(
+                              constraints: const BoxConstraints(maxWidth: 110),
+                              child: Text(
+                                store.selectedSubCity == 'All Sub-cities'
+                                    ? store.selectedCity
+                                    : store.selectedSubCity,
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w700,
+                                  color: isDark ? Colors.white : AppColors.textDarkPrimary,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                            const SizedBox(width: 2),
+                            const Icon(Icons.keyboard_arrow_down_rounded, size: 16, color: AppColors.textDarkMuted),
+                          ],
+                        ),
                       ),
                     ),
                     const SizedBox(width: 8),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Text(
-                            car.formattedPrice,
-                            style: const TextStyle(
-                              color: Colors.black,
-                              fontSize: 16,
-                              fontWeight: FontWeight.w900,
-                            ),
+
+                    // Filter Button
+                    GestureDetector(
+                      onTap: () => _showFilterSheet(context, store),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+                        decoration: BoxDecoration(
+                          color: isDark ? AppColors.charcoalCard : Colors.white,
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                            color: isDark ? AppColors.charcoalBorder : AppColors.cashmereBorder,
                           ),
-                          Text(
-                            car.formattedMonthlyEmi(),
-                            style: const TextStyle(
-                              color: Colors.black54,
-                              fontSize: 10,
-                              fontWeight: FontWeight.bold,
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(Icons.tune_rounded, size: 14, color: isDark ? Colors.white : AppColors.textDarkPrimary),
+                            const SizedBox(width: 4),
+                            Text(
+                              'Filter',
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w700,
+                                color: isDark ? Colors.white : AppColors.textDarkPrimary,
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ],
                 ),
               ),
-            ],
-          ),
+            ),
+
+            // 2. Universal Search Bar
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
+                child: Container(
+                  height: 48,
+                  decoration: BoxDecoration(
+                    color: isDark ? AppColors.charcoalCard : Colors.white,
+                    borderRadius: BorderRadius.circular(24),
+                    border: Border.all(
+                      color: isDark ? AppColors.charcoalBorder : AppColors.cashmereBorder,
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(isDark ? 0.2 : 0.04),
+                        blurRadius: 10,
+                        offset: const Offset(0, 3),
+                      ),
+                    ],
+                  ),
+                  child: TextField(
+                    controller: _searchController,
+                    onChanged: (val) => store.setSearchQuery(val),
+                    style: TextStyle(
+                      fontSize: 13.5,
+                      color: isDark ? Colors.white : AppColors.textDarkPrimary,
+                    ),
+                    decoration: InputDecoration(
+                      hintText: isHousesMode
+                          ? 'Search houses, villas or apartments...'
+                          : 'Search Toyota, Hyundai, SUVs or cars...',
+                      hintStyle: const TextStyle(fontSize: 13, color: AppColors.textDarkMuted),
+                      prefixIcon: const Icon(Icons.search_rounded, color: AppColors.primaryAmber, size: 20),
+                      suffixIcon: _searchController.text.isNotEmpty
+                          ? IconButton(
+                              icon: const Icon(Icons.clear_rounded, size: 16),
+                              onPressed: () {
+                                _searchController.clear();
+                                store.setSearchQuery('');
+                              },
+                            )
+                          : null,
+                      border: InputBorder.none,
+                      enabledBorder: InputBorder.none,
+                      focusedBorder: InputBorder.none,
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 13),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+
+            // 3. Segmented Dual-Category Switcher: [ Houses ] | [ Cars ]
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(16, 4, 16, 12),
+                child: Container(
+                  padding: const EdgeInsets.all(5),
+                  decoration: BoxDecoration(
+                    color: isDark ? AppColors.charcoalCard : AppColors.cashmereElevated,
+                    borderRadius: BorderRadius.circular(22),
+                    border: Border.all(
+                      color: isDark ? AppColors.charcoalBorder : AppColors.cashmereBorder,
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      // Houses Tab
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () => store.setActiveCategory(CategoryMode.houses),
+                          child: AnimatedContainer(
+                            duration: const Duration(milliseconds: 220),
+                            curve: Curves.easeInOut,
+                            padding: const EdgeInsets.symmetric(vertical: 10),
+                            decoration: BoxDecoration(
+                              color: isHousesMode
+                                  ? (isDark ? AppColors.charcoalDark : Colors.white)
+                                  : Colors.transparent,
+                              borderRadius: BorderRadius.circular(18),
+                              boxShadow: isHousesMode
+                                  ? [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.08),
+                                        blurRadius: 8,
+                                        offset: const Offset(0, 2),
+                                      ),
+                                    ]
+                                  : null,
+                              border: isHousesMode
+                                  ? Border.all(color: AppColors.primaryAmber.withOpacity(0.4), width: 1.2)
+                                  : null,
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.home_work_rounded,
+                                  size: 18,
+                                  color: isHousesMode ? AppColors.primaryAmber : AppColors.textDarkMuted,
+                                ),
+                                const SizedBox(width: 8),
+                                Text(
+                                  'Houses',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: isHousesMode ? FontWeight.w800 : FontWeight.w600,
+                                    color: isHousesMode
+                                        ? (isDark ? Colors.white : AppColors.textDarkPrimary)
+                                        : AppColors.textDarkMuted,
+                                  ),
+                                ),
+                                const SizedBox(width: 6),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                  decoration: BoxDecoration(
+                                    color: isHousesMode
+                                        ? AppColors.primaryAmber.withOpacity(0.15)
+                                        : Colors.transparent,
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: Text(
+                                    '${store.allProperties.length}',
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.w700,
+                                      color: isHousesMode ? AppColors.primaryAmberDark : AppColors.textDarkMuted,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 4),
+
+                      // Cars Tab
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () => store.setActiveCategory(CategoryMode.cars),
+                          child: AnimatedContainer(
+                            duration: const Duration(milliseconds: 220),
+                            curve: Curves.easeInOut,
+                            padding: const EdgeInsets.symmetric(vertical: 10),
+                            decoration: BoxDecoration(
+                              color: !isHousesMode
+                                  ? (isDark ? AppColors.charcoalDark : Colors.white)
+                                  : Colors.transparent,
+                              borderRadius: BorderRadius.circular(18),
+                              boxShadow: !isHousesMode
+                                  ? [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.08),
+                                        blurRadius: 8,
+                                        offset: const Offset(0, 2),
+                                      ),
+                                    ]
+                                  : null,
+                              border: !isHousesMode
+                                  ? Border.all(color: AppColors.primaryAmber.withOpacity(0.4), width: 1.2)
+                                  : null,
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.directions_car_filled_rounded,
+                                  size: 18,
+                                  color: !isHousesMode ? AppColors.primaryAmber : AppColors.textDarkMuted,
+                                ),
+                                const SizedBox(width: 8),
+                                Text(
+                                  'Cars',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: !isHousesMode ? FontWeight.w800 : FontWeight.w600,
+                                    color: !isHousesMode
+                                        ? (isDark ? Colors.white : AppColors.textDarkPrimary)
+                                        : AppColors.textDarkMuted,
+                                  ),
+                                ),
+                                const SizedBox(width: 6),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                  decoration: BoxDecoration(
+                                    color: !isHousesMode
+                                        ? AppColors.primaryAmber.withOpacity(0.15)
+                                        : Colors.transparent,
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: Text(
+                                    '${store.allCars.length}',
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.w700,
+                                      color: !isHousesMode ? AppColors.primaryAmberDark : AppColors.textDarkMuted,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+
+            // 4. Promotional Banner Slot ("Featured this week")
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(16, 2, 16, 16),
+                child: Container(
+                  padding: const EdgeInsets.all(18),
+                  decoration: BoxDecoration(
+                    gradient: AppColors.heroBannerGradient,
+                    borderRadius: BorderRadius.circular(22),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.primaryAmber.withOpacity(0.25),
+                        blurRadius: 16,
+                        offset: const Offset(0, 6),
+                      ),
+                    ],
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                              decoration: BoxDecoration(
+                                color: AppColors.primaryAmber,
+                                borderRadius: BorderRadius.circular(6),
+                              ),
+                              child: const Text(
+                                'FEATURED THIS WEEK',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 9.5,
+                                  fontWeight: FontWeight.w900,
+                                  letterSpacing: 0.8,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            const Text(
+                              'Verified Diplomatic Properties & Hybrid Imports in Addis',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 15,
+                                fontWeight: FontWeight.w800,
+                                height: 1.25,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              'Pre-audited TIN titles with zero broker fraud.',
+                              style: TextStyle(
+                                color: Colors.white.withOpacity(0.8),
+                                fontSize: 11.5,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.15),
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(Icons.stars_rounded, color: AppColors.primaryAmber, size: 28),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+
+            // Section Title & Counter
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(18, 0, 18, 12),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      isHousesMode ? 'Verified Houses & Condos' : 'Verified Vehicles & SUVs',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w800,
+                        color: isDark ? Colors.white : AppColors.textDarkPrimary,
+                      ),
+                    ),
+                    Text(
+                      '${isHousesMode ? properties.length : cars.length} Listings',
+                      style: const TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.textDarkMuted,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+            // 5. Responsive 2-Column Listing Grid
+            if (isHousesMode)
+              properties.isEmpty
+                  ? _buildEmptyState(isDark, store)
+                  : SliverPadding(
+                      padding: const EdgeInsets.fromLTRB(16, 0, 16, 100),
+                      sliver: SliverGrid(
+                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 12,
+                          mainAxisSpacing: 16,
+                          childAspectRatio: 0.62,
+                        ),
+                        delegate: SliverChildBuilderDelegate(
+                          (ctx, i) {
+                            final p = properties[i];
+                            return PropertyCard(
+                              property: p,
+                              isFavorite: store.isFavorite(p.id),
+                              onToggleFavorite: () => store.toggleFavorite(p.id),
+                            );
+                          },
+                          childCount: properties.length,
+                        ),
+                      ),
+                    )
+            else
+              cars.isEmpty
+                  ? _buildEmptyState(isDark, store)
+                  : SliverPadding(
+                      padding: const EdgeInsets.fromLTRB(16, 0, 16, 100),
+                      sliver: SliverGrid(
+                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 12,
+                          mainAxisSpacing: 16,
+                          childAspectRatio: 0.62,
+                        ),
+                        delegate: SliverChildBuilderDelegate(
+                          (ctx, i) {
+                            final car = cars[i];
+                            return CarCard(
+                              car: car,
+                              isGrid: true,
+                              isFavorite: store.isFavorite(car.id),
+                              onTap: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (c) => CarDetailsScreen(car: car),
+                                  ),
+                                );
+                              },
+                              onFavoriteToggle: () => store.toggleFavorite(car.id),
+                            );
+                          },
+                          childCount: cars.length,
+                        ),
+                      ),
+                    ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildEmptyState(bool isDark, CarStore store) {
+    return SliverToBoxAdapter(
+      child: Padding(
+        padding: const EdgeInsets.all(48),
+        child: Column(
+          children: [
+            const Icon(Icons.search_off_rounded, size: 54, color: AppColors.textDarkMuted),
+            const SizedBox(height: 14),
+            Text(
+              'No listings found in ${store.selectedSubCity}',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
+                color: isDark ? Colors.white : AppColors.textDarkPrimary,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 8),
+            const Text(
+              'Try changing your location filter to "All Sub-cities" or clearing your search.',
+              style: TextStyle(fontSize: 13, color: AppColors.textDarkMuted),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 18),
+            ElevatedButton(
+              onPressed: () {
+                _searchController.clear();
+                store.setSearchQuery('');
+                store.setSelectedSubCity('All Sub-cities');
+                store.setPropertyListingTypeFilter(null);
+                store.setSelectedBrand('All Makes');
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primaryAmber,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              ),
+              child: const Text('Reset All Filters', style: TextStyle(color: Colors.white)),
+            ),
+          ],
         ),
       ),
     );

@@ -7,47 +7,47 @@ import 'screens/main_layout.dart';
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Set immersive status bar
+  // Set modern status bar
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
-      statusBarIconBrightness: Brightness.light,
+      statusBarIconBrightness: Brightness.dark,
       systemNavigationBarColor: Colors.transparent,
     ),
   );
 
-  runApp(const AutoVaultApp());
+  runApp(const AllSellApp());
 }
 
-class AutoVaultApp extends StatefulWidget {
-  const AutoVaultApp({Key? key}) : super(key: key);
+class AllSellApp extends StatefulWidget {
+  const AllSellApp({Key? key}) : super(key: key);
 
   @override
-  State<AutoVaultApp> createState() => _AutoVaultAppState();
+  State<AllSellApp> createState() => _AllSellAppState();
 }
 
-class _AutoVaultAppState extends State<AutoVaultApp> {
-  final CarStore _carStore = CarStore();
+class _AllSellAppState extends State<AllSellApp> {
+  final CarStore _store = CarStore();
 
   @override
   void dispose() {
-    _carStore.dispose();
+    _store.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return CarStoreProvider(
-      store: _carStore,
+      store: _store,
       child: AnimatedBuilder(
-        animation: _carStore,
+        animation: _store,
         builder: (context, _) {
           return MaterialApp(
-            title: 'AutoVault - Car Marketplace',
+            title: 'ALLSELL - Connect & Simplify',
             debugShowCheckedModeBanner: false,
             theme: AppTheme.lightTheme,
             darkTheme: AppTheme.darkTheme,
-            themeMode: _carStore.isDarkMode ? ThemeMode.dark : ThemeMode.light,
+            themeMode: _store.isDarkMode ? ThemeMode.dark : ThemeMode.light,
             home: const MainLayout(),
           );
         },

@@ -1,7 +1,7 @@
 class Seller {
   final String id;
   final String name;
-  final String type; // 'Verified Dealer', 'Private Collector', 'Certified Showroom'
+  final String type; // 'Verified Broker', 'Certified Real Estate Agency', 'Authorized Auto Dealer'
   final String avatarUrl;
   final double rating;
   final int reviewCount;
@@ -11,6 +11,8 @@ class Seller {
   final String responseTime;
   final int memberSinceYear;
   final bool isVerified;
+  final String tinNumber; // Ethiopian TIN (e.g., '0049281729')
+  final String licenseNumber; // Ministry of Trade License
 
   const Seller({
     required this.id,
@@ -25,6 +27,8 @@ class Seller {
     required this.responseTime,
     required this.memberSinceYear,
     this.isVerified = true,
+    this.tinNumber = '0049281729',
+    this.licenseNumber = 'ET-AA-2024-9182',
   });
 
   Map<String, dynamic> toMap() {
@@ -41,6 +45,8 @@ class Seller {
       'responseTime': responseTime,
       'memberSinceYear': memberSinceYear,
       'isVerified': isVerified,
+      'tinNumber': tinNumber,
+      'licenseNumber': licenseNumber,
     };
   }
 
@@ -48,16 +54,18 @@ class Seller {
     return Seller(
       id: map['id'] ?? '',
       name: map['name'] ?? '',
-      type: map['type'] ?? 'Private Seller',
+      type: map['type'] ?? 'Verified Broker',
       avatarUrl: map['avatarUrl'] ?? '',
       rating: (map['rating'] as num?)?.toDouble() ?? 5.0,
       reviewCount: map['reviewCount'] ?? 0,
       phone: map['phone'] ?? '',
       email: map['email'] ?? '',
       location: map['location'] ?? '',
-      responseTime: map['responseTime'] ?? '< 1 hour',
-      memberSinceYear: map['memberSinceYear'] ?? 2022,
+      responseTime: map['responseTime'] ?? '< 15 mins',
+      memberSinceYear: map['memberSinceYear'] ?? 2023,
       isVerified: map['isVerified'] ?? true,
+      tinNumber: map['tinNumber'] ?? '0049281729',
+      licenseNumber: map['licenseNumber'] ?? 'ET-AA-2024-9182',
     );
   }
 }

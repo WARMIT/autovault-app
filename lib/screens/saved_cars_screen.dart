@@ -1,202 +1,186 @@
 import 'package:flutter/material.dart';
+import '../models/property.dart';
+import '../models/car.dart';
 import '../state/car_store.dart';
 import '../theme/app_colors.dart';
+import '../widgets/property_card.dart';
 import '../widgets/car_card.dart';
 import 'car_details_screen.dart';
-import 'car_comparison_screen.dart';
 
-class SavedCarsScreen extends StatelessWidget {
+class SavedCarsScreen extends StatefulWidget {
   final Function(int) onNavigateTab;
 
   const SavedCarsScreen({Key? key, required this.onNavigateTab}) : super(key: key);
 
   @override
+  State<SavedCarsScreen> createState() => _SavedCarsScreenState();
+}
+
+class _SavedCarsScreenState extends State<SavedCarsScreen> with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final store = CarStoreProvider.of(context);
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final favoriteProperties = store.favoriteProperties;
     final favoriteCars = store.favoriteCars;
-    final compareList = store.compareList;
 
     return Scaffold(
+      backgroundColor: isDark ? AppColors.obsidianBlack : AppColors.cashmereBg,
       appBar: AppBar(
-        title: const Text('Saved & Comparison'),
-        actions: [
-          if (compareList.isNotEmpty)
-            TextButton.icon(
-              onPressed: () => store.clearCompare(),
-              icon: const Icon(Icons.clear_all_rounded, size: 16),
-              label: const Text('Clear Compare'),
-            ),
-        ],
+        title: const Text('Saved Favorites'),
+        bottom: TabBar(
+          controller: _tabController,
+          labelColor: AppColors.primaryAmber,
+          unselectedLabelColor: isDark ? AppColors.textLightMuted : AppColors.textDarkMuted,
+          indicatorColor: AppColors.primaryAmber,
+          indicatorWeight: 3,
+          labelStyle: const TextStyle(fontWeight: FontWeight.w800, fontSize: 14),
+          tabs: [
+            Tab(text: 'Houses (${favoriteProperties.length})'),
+            Tab(text: 'Cars (${favoriteCars.length})'),
+          ],
+        ),
       ),
-      body: favoriteCars.isEmpty
-          ? Center(
-              child: Padding(
-                padding: const EdgeInsets.all(32),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(Icons.favorite_border_rounded, size: 64, color: AppColors.darkTextMuted),
-                    const SizedBox(height: 16),
-                    Text(
-                      'Your Garage is Empty',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: isDark ? Colors.white : AppColors.lightTextPrimary,
-                      ),
+      body: TabBarView(
+        controller: _tabController,
+        children: [
+          // Saved Houses Tab
+          favoriteProperties.isEmpty
+              ? _buildEmptyView(
+                  title: 'No Saved Properties',
+                  subtitle: 'Tap the heart icon on any house, villa, or condo to save it here.',
+                  isDark: isDark,
+                  onBrowse: () {
+                    store.setActiveCategory(CategoryMode.houses);
+                    widget.onNavigateTab(0);
+                  },
+                )
+              : Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: GridView.builder(
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 12,
+                      mainAxisSpacing: 16,
+                      childAspectRatio: 0.62,
                     ),
-                    const SizedBox(height: 8),
-                    Text(
-                      'Tap the heart icon on any vehicle to save it to your personal watchlist and compare specs.',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: isDark ? AppColors.darkTextMuted : AppColors.lightTextMuted,
-                      ),
-                    ),
-                    const SizedBox(height: 24),
-                    ElevatedButton(
-                      onPressed: () => onNavigateTab(0),
-                      child: const Text('Explore Supercars & EVs'),
-                    ),
-                  ],
-                ),
-              ),
-            )
-          : Column(
-              children: [
-                // Compare Bar if cars selected
-                if (compareList.isNotEmpty)
-                  Container(
-                    margin: const EdgeInsets.fromLTRB(20, 8, 20, 12),
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                    decoration: BoxDecoration(
-                      gradient: AppColors.primaryGradient,
-                      borderRadius: BorderRadius.circular(16),
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppColors.primary.withOpacity(0.3),
-                          blurRadius: 12,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
-                    ),
-                    child: Row(
-                      children: [
-                        const Icon(Icons.compare_arrows_rounded, color: Colors.white, size: 24),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                '${compareList.length} Vehicles in Comparison',
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w800,
-                                  fontSize: 14,
-                                ),
-                              ),
-                              Text(
-                                compareList.map((c) => c.model).join(' vs '),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: const TextStyle(
-                                  color: Colors.white70,
-                                  fontSize: 11,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.white,
-                            foregroundColor: AppColors.primary,
-                            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-                          ),
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => CarComparisonScreen(cars: compareList),
-                              ),
-                            );
-                          },
-                          child: const Text('Compare', style: TextStyle(fontWeight: FontWeight.bold)),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                // Saved cars list
-                Expanded(
-                  child: ListView.builder(
-                    physics: const BouncingScrollPhysics(),
-                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                    itemCount: favoriteCars.length,
-                    itemBuilder: (context, index) {
-                      final car = favoriteCars[index];
-                      final isComparing = store.isInCompare(car.id);
-
-                      return Stack(
-                        children: [
-                          CarCard(
-                            car: car,
-                            isFavorite: true,
-                            onFavoriteToggle: () => store.toggleFavorite(car.id),
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (ctx) => CarDetailsScreen(car: car),
-                                ),
-                              );
-                            },
-                          ),
-                          Positioned(
-                            top: 14,
-                            left: 14,
-                            child: InkWell(
-                              onTap: () => store.toggleCompare(car),
-                              borderRadius: BorderRadius.circular(8),
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                                decoration: BoxDecoration(
-                                  color: isComparing ? AppColors.accentCyan : Colors.black.withOpacity(0.7),
-                                  borderRadius: BorderRadius.circular(8),
-                                  border: Border.all(color: Colors.white24),
-                                ),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Icon(
-                                      isComparing ? Icons.check_circle_rounded : Icons.add_circle_outline_rounded,
-                                      color: isComparing ? Colors.black : Colors.white,
-                                      size: 14,
-                                    ),
-                                    const SizedBox(width: 4),
-                                    Text(
-                                      isComparing ? 'Selected to Compare' : '+ Compare',
-                                      style: TextStyle(
-                                        color: isComparing ? Colors.black : Colors.white,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 11,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
+                    itemCount: favoriteProperties.length,
+                    itemBuilder: (ctx, i) {
+                      final p = favoriteProperties[i];
+                      return PropertyCard(
+                        property: p,
+                        isFavorite: true,
+                        onToggleFavorite: () => store.toggleFavorite(p.id),
                       );
                     },
                   ),
                 ),
-              ],
+
+          // Saved Cars Tab
+          favoriteCars.isEmpty
+              ? _buildEmptyView(
+                  title: 'No Saved Vehicles',
+                  subtitle: 'Bookmark your favorite SUVs, sedans, or electric cars to inspect later.',
+                  isDark: isDark,
+                  onBrowse: () {
+                    store.setActiveCategory(CategoryMode.cars);
+                    widget.onNavigateTab(0);
+                  },
+                )
+              : Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: GridView.builder(
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 12,
+                      mainAxisSpacing: 16,
+                      childAspectRatio: 0.62,
+                    ),
+                    itemCount: favoriteCars.length,
+                    itemBuilder: (ctx, i) {
+                      final car = favoriteCars[i];
+                      return CarCard(
+                        car: car,
+                        isGrid: true,
+                        isFavorite: true,
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (c) => CarDetailsScreen(car: car),
+                            ),
+                          );
+                        },
+                        onFavoriteToggle: () => store.toggleFavorite(car.id),
+                      );
+                    },
+                  ),
+                ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildEmptyView({
+    required String title,
+    required String subtitle,
+    required bool isDark,
+    required VoidCallback onBrowse,
+  }) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(32),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: AppColors.primaryAmber.withOpacity(0.1),
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(Icons.favorite_border_rounded, size: 48, color: AppColors.primaryAmber),
             ),
+            const SizedBox(height: 20),
+            Text(
+              title,
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w800,
+                color: isDark ? Colors.white : AppColors.textDarkPrimary,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              subtitle,
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 13, color: AppColors.textDarkMuted),
+            ),
+            const SizedBox(height: 24),
+            ElevatedButton(
+              onPressed: onBrowse,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primaryAmber,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+              ),
+              child: const Text('Explore Listings', style: TextStyle(fontWeight: FontWeight.w800, color: Colors.white)),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

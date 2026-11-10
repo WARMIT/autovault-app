@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import '../models/car.dart';
 import '../state/car_store.dart';
 import '../theme/app_colors.dart';
-import '../widgets/custom_image.dart';
-import 'car_details_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   final Function(int) onNavigateTab;
@@ -14,443 +11,426 @@ class ProfileScreen extends StatefulWidget {
   State<ProfileScreen> createState() => _ProfileScreenState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProviderStateMixin {
-  late TabController _tabController;
-
-  @override
-  void initState() {
-    super.initState();
-    _tabController = TabController(length: 2, vsync: this);
-  }
-
-  @override
-  void dispose() {
-    _tabController.dispose();
-    super.dispose();
-  }
+class _ProfileScreenState extends State<ProfileScreen> {
+  String _selectedRole = 'customer'; // 'customer', 'agent', 'auditor'
 
   @override
   Widget build(BuildContext context) {
     final store = CarStoreProvider.of(context);
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final userCars = store.userListedCars;
-    final bookings = store.bookings;
 
     return Scaffold(
+      backgroundColor: isDark ? AppColors.obsidianBlack : AppColors.cashmereBg,
       appBar: AppBar(
-        title: const Text('Account & Garage'),
+        title: const Text('Account & Institutional Portals'),
         actions: [
           IconButton(
-            icon: Icon(store.isDarkMode ? Icons.light_mode_rounded : Icons.dark_mode_rounded),
+            icon: Icon(
+              isDark ? Icons.light_mode_rounded : Icons.dark_mode_rounded,
+              color: AppColors.primaryAmber,
+            ),
             onPressed: () => store.toggleTheme(),
           ),
         ],
       ),
-      body: NestedScrollView(
-        headerSliverBuilder: (context, innerBoxIsScrolled) {
-          return [
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                child: Column(
-                  children: [
-                    // Profile Header Card
-                    Container(
-                      padding: const EdgeInsets.all(18),
-                      decoration: BoxDecoration(
-                        color: isDark ? AppColors.darkCard : Colors.white,
-                        borderRadius: BorderRadius.circular(24),
-                        border: Border.all(
-                          color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // User KYC Profile Card
+            Container(
+              padding: const EdgeInsets.all(18),
+              decoration: BoxDecoration(
+                color: isDark ? AppColors.charcoalCard : Colors.white,
+                borderRadius: BorderRadius.circular(22),
+                border: Border.all(
+                  color: isDark ? AppColors.charcoalBorder : AppColors.cashmereBorder,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(isDark ? 0.25 : 0.04),
+                    blurRadius: 12,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: Row(
+                children: [
+                  Stack(
+                    children: [
+                      const CircleAvatar(
+                        radius: 32,
+                        backgroundImage: NetworkImage(
+                          'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80',
                         ),
                       ),
-                      child: Row(
-                        children: [
-                          CustomImage(
-                            imageUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
-                            width: 68,
-                            height: 68,
-                            borderRadius: BorderRadius.circular(34),
+                      Positioned(
+                        bottom: 0,
+                        right: 0,
+                        child: Container(
+                          padding: const EdgeInsets.all(4),
+                          decoration: const BoxDecoration(
+                            color: AppColors.verifiedGreen,
+                            shape: BoxShape.circle,
                           ),
-                          const SizedBox(width: 16),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Row(
-                                  children: [
-                                    Text(
-                                      'Elena Sterling',
-                                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900),
-                                    ),
-                                    SizedBox(width: 6),
-                                    Icon(Icons.verified_rounded, color: AppColors.accentCyan, size: 18),
-                                  ],
-                                ),
-                                const SizedBox(height: 2),
-                                Text(
-                                  'Private Collector • Tier 1 Verified',
-                                  style: TextStyle(
-                                    color: isDark ? AppColors.darkTextMuted : AppColors.lightTextMuted,
-                                    fontSize: 12,
-                                  ),
-                                ),
-                                const SizedBox(height: 8),
-                                Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                                  decoration: BoxDecoration(
-                                    color: AppColors.success.withOpacity(0.15),
-                                    borderRadius: BorderRadius.circular(6),
-                                  ),
-                                  child: const Text(
-                                    'AUTOVAULT PREMIER MEMBER',
-                                    style: TextStyle(
-                                      color: AppColors.success,
-                                      fontSize: 10,
-                                      fontWeight: FontWeight.w900,
-                                      letterSpacing: 0.8,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
+                          child: const Icon(Icons.verified_rounded, size: 14, color: Colors.white),
+                        ),
                       ),
-                    ),
-
-                    const SizedBox(height: 16),
-
-                    // Stats Dashboard Row
-                    Row(
+                    ],
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _buildStatBox('${userCars.length}', 'My Listings', Icons.storefront_rounded, isDark),
-                        const SizedBox(width: 10),
-                        _buildStatBox('${store.favoriteCars.length}', 'Saved Cars', Icons.favorite_rounded, isDark),
-                        const SizedBox(width: 10),
-                        _buildStatBox('${bookings.length}', 'Test Drives', Icons.key_rounded, isDark),
+                        Row(
+                          children: [
+                            Text(
+                              'Amanuel Haile',
+                              style: TextStyle(
+                                fontSize: 17,
+                                fontWeight: FontWeight.w800,
+                                color: isDark ? Colors.white : AppColors.textDarkPrimary,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 3),
+                        Text(
+                          'TIN: 0049281729 • Addis Ababa',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            color: isDark ? AppColors.textLightMuted : AppColors.textDarkMuted,
+                          ),
+                        ),
+                        const SizedBox(height: 6),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                          decoration: BoxDecoration(
+                            color: AppColors.verifiedGreen.withOpacity(0.12),
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                          child: const Text(
+                            '✓ Certified Broker & Verified Account',
+                            style: TextStyle(color: AppColors.verifiedGreen, fontSize: 10.5, fontWeight: FontWeight.w700),
+                          ),
+                        ),
                       ],
                     ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 24),
 
-                    const SizedBox(height: 20),
+            // Role Switcher Tabs (3 Modes)
+            Text(
+              'Switch Active Workspace',
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w800,
+                color: isDark ? Colors.white : AppColors.textDarkPrimary,
+              ),
+            ),
+            const SizedBox(height: 10),
 
-                    // Quick Sell Action Banner
-                    InkWell(
-                      onTap: () => widget.onNavigateTab(2), // Go to Sell Car tab
-                      borderRadius: BorderRadius.circular(18),
-                      child: Container(
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          gradient: AppColors.primaryGradient,
-                          borderRadius: BorderRadius.circular(18),
-                          boxShadow: [
-                            BoxShadow(
-                              color: AppColors.primary.withOpacity(0.3),
-                              blurRadius: 14,
-                              offset: const Offset(0, 6),
-                            ),
-                          ],
-                        ),
-                        child: const Row(
-                          children: [
-                            Icon(Icons.add_circle_outline_rounded, color: Colors.white, size: 28),
-                            SizedBox(width: 14),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'List Another Vehicle for Sale',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w800,
-                                    ),
-                                  ),
-                                  Text(
-                                    'Instant smart valuation & buyer matchmaking',
-                                    style: TextStyle(
-                                      color: Colors.white70,
-                                      fontSize: 12,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Icon(Icons.arrow_forward_ios_rounded, color: Colors.white, size: 16),
-                          ],
-                        ),
+            Container(
+              padding: const EdgeInsets.all(4),
+              decoration: BoxDecoration(
+                color: isDark ? AppColors.charcoalCard : AppColors.cashmereElevated,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: isDark ? AppColors.charcoalBorder : AppColors.cashmereBorder),
+              ),
+              child: Row(
+                children: [
+                  _buildRoleTab('customer', 'Buyer / Client', Icons.person_rounded, isDark),
+                  _buildRoleTab('agent', 'Broker CRM', Icons.real_estate_agent_rounded, isDark),
+                  _buildRoleTab('auditor', 'Auditor / Gov', Icons.account_balance_rounded, isDark),
+                ],
+              ),
+            ),
+            const SizedBox(height: 24),
+
+            // DYNAMIC VIEW BASED ON SELECTED ROLE
+            if (_selectedRole == 'customer') ...[
+              // CUSTOMER VIEW
+              _buildSectionHeader('Buyer Preferences & Utilities', isDark),
+              const SizedBox(height: 12),
+              _buildSettingsTile(Icons.favorite_outline_rounded, 'My Saved Listings', 'Review your saved houses and cars', () {
+                widget.onNavigateTab(2); // Go to Favorites tab
+              }, isDark),
+              _buildSettingsTile(Icons.history_rounded, 'Contact Unlock History', '1 listing contact unlocked via Telebirr', () {}, isDark),
+              _buildSettingsTile(Icons.language_rounded, 'App Language', 'English (አማርኛ supported)', () {}, isDark),
+              _buildSettingsTile(Icons.shield_outlined, 'KYC & ID Documents', 'National ID & TIN verified', () {}, isDark),
+            ] else if (_selectedRole == 'agent') ...[
+              // AGENT / BROKER DASHBOARD (Pages 9-10 of PDF)
+              _buildSectionHeader('Agent Broker Operations (My Dashboard)', isDark),
+              const SizedBox(height: 12),
+
+              // KPI Grid
+              GridView.count(
+                crossAxisCount: 2,
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                mainAxisSpacing: 12,
+                crossAxisSpacing: 12,
+                childAspectRatio: 1.6,
+                children: [
+                  _buildKpiCard('Total Listings', '25', 'Active: 18 • Pending: 4', Icons.list_alt_rounded, isDark),
+                  _buildKpiCard('Deals Closed', '3 Deals', 'Sold: 2 • Rented: 1', Icons.handshake_rounded, isDark),
+                  _buildKpiCard('Gross Sales', 'ETB 42.5M', 'Turnover volume', Icons.payments_rounded, isDark),
+                  _buildKpiCard('Commissions', 'ETB 850,000', 'Net payout balance', Icons.account_balance_wallet_rounded, isDark),
+                ],
+              ),
+              const SizedBox(height: 16),
+
+              // Broker Functions
+              _buildSettingsTile(Icons.add_box_rounded, 'Post New Verified Listing', 'Create house or car listing', () {
+                widget.onNavigateTab(1); // Go to Add tab
+              }, isDark),
+              _buildSettingsTile(Icons.people_outline_rounded, 'Lead CRM & Inquiries', '12 buyer contact unlocks recorded', () {}, isDark),
+              _buildSettingsTile(Icons.receipt_long_rounded, 'Commission & Tax Reports', 'Download annual broker income statement', () {}, isDark),
+            ] else ...[
+              // GOVERNMENT / AUDITOR COMPLIANCE PORTAL (Pages 12-13 of PDF)
+              _buildSectionHeader('Government & Auditor Compliance Portal', isDark),
+              const SizedBox(height: 6),
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: AppColors.verifiedGreen.withOpacity(0.08),
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(color: AppColors.verifiedGreen.withOpacity(0.2)),
+                ),
+                child: const Row(
+                  children: [
+                    Icon(Icons.verified_user_rounded, color: AppColors.verifiedGreen, size: 20),
+                    SizedBox(width: 10),
+                    Expanded(
+                      child: Text(
+                        'Read-Only Regulatory Access for Ethiopian Revenue Authority (ERA) & Ministry of Trade.',
+                        style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.verifiedGreen),
                       ),
                     ),
-
-                    const SizedBox(height: 16),
                   ],
                 ),
               ),
-            ),
+              const SizedBox(height: 14),
 
-            // Tab bar header
-            SliverPersistentHeader(
-              pinned: true,
-              delegate: _TabBarDelegate(
-                TabBar(
-                  controller: _tabController,
-                  indicatorColor: AppColors.primary,
-                  indicatorWeight: 3,
-                  labelColor: AppColors.primary,
-                  unselectedLabelColor: isDark ? AppColors.darkTextMuted : AppColors.lightTextMuted,
-                  tabs: const [
-                    Tab(text: 'My Listed Vehicles'),
-                    Tab(text: 'Test Drive Bookings'),
+              // Macro Platform Metrics
+              GridView.count(
+                crossAxisCount: 2,
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                mainAxisSpacing: 12,
+                crossAxisSpacing: 12,
+                childAspectRatio: 1.5,
+                children: [
+                  _buildKpiCard('Registered Agents', '${store.auditorRegisteredAgents}', 'Active with TIN: ${store.auditorActiveAgents}', Icons.badge_rounded, isDark),
+                  _buildKpiCard('Transactions', '${store.auditorTotalTransactions}', 'Platform total', Icons.sync_alt_rounded, isDark),
+                  _buildKpiCard('Total Property Sales', 'ETB 450.2M', 'Residential & Commercial', Icons.apartment_rounded, isDark),
+                  _buildKpiCard('Total Rental Value', 'ETB 82.4M', 'Lease contracts', Icons.key_rounded, isDark),
+                ],
+              ),
+              const SizedBox(height: 14),
+
+              // Tax & Commission Overview
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: isDark ? AppColors.charcoalCard : Colors.white,
+                  borderRadius: BorderRadius.circular(18),
+                  border: Border.all(color: isDark ? AppColors.charcoalBorder : AppColors.cashmereBorder),
+                ),
+                child: Column(
+                  children: [
+                    _buildTaxLine('Gross Broker Commission Pool', 'ETB 13,506,000.00', isDark),
+                    const Divider(height: 16),
+                    _buildTaxLine('Estimated ERA Withholding (20%)', 'ETB 2,701,200.00', isDark, isHighlight: true),
+                    const Divider(height: 16),
+                    _buildTaxLine('Audit Log Verification Status', '100% Cryptographically Logged', isDark),
                   ],
                 ),
-                backgroundColor: isDark ? AppColors.darkBackground : AppColors.lightBackground,
               ),
-            ),
-          ];
-        },
-        body: TabBarView(
-          controller: _tabController,
-          children: [
-            // Tab 1: User Listed Cars
-            userCars.isEmpty
-                ? Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(28),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Icon(Icons.car_rental_rounded, size: 52, color: AppColors.darkTextMuted),
-                          const SizedBox(height: 12),
-                          const Text(
-                            'No vehicles listed yet',
-                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                          ),
-                          const SizedBox(height: 6),
-                          const Text(
-                            'List your supercar, sports car, or luxury EV on AutoVault in just 2 minutes.',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(fontSize: 12, color: Colors.grey),
-                          ),
-                          const SizedBox(height: 16),
-                          ElevatedButton(
-                            onPressed: () => widget.onNavigateTab(2),
-                            child: const Text('Sell Your Vehicle'),
-                          ),
-                        ],
+              const SizedBox(height: 16),
+              SizedBox(
+                width: double.infinity,
+                height: 48,
+                child: ElevatedButton.icon(
+                  icon: const Icon(Icons.download_rounded, color: Colors.white, size: 18),
+                  label: const Text('Export Official ERA Audit Statement (PDF / CSV)'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primaryAmber,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                  ),
+                  onPressed: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        backgroundColor: AppColors.verifiedGreen,
+                        content: Text('Exporting official compliance statement to device...'),
                       ),
-                    ),
-                  )
-                : ListView.builder(
-                    padding: const EdgeInsets.all(20),
-                    itemCount: userCars.length,
-                    itemBuilder: (context, idx) {
-                      final car = userCars[idx];
-                      return Container(
-                        margin: const EdgeInsets.only(bottom: 14),
-                        padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          color: isDark ? AppColors.darkCard : Colors.white,
-                          borderRadius: BorderRadius.circular(18),
-                          border: Border.all(
-                            color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
-                          ),
-                        ),
-                        child: Row(
-                          children: [
-                            CustomImage(
-                              imageUrl: car.primaryImage,
-                              width: 80,
-                              height: 60,
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            const SizedBox(width: 14),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    children: [
-                                      Container(
-                                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                                        decoration: BoxDecoration(
-                                          color: AppColors.success.withOpacity(0.15),
-                                          borderRadius: BorderRadius.circular(4),
-                                        ),
-                                        child: const Text(
-                                          'ACTIVE LISTING',
-                                          style: TextStyle(color: AppColors.success, fontSize: 9, fontWeight: FontWeight.bold),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    car.title,
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
-                                  ),
-                                  Text(
-                                    '${car.formattedPrice} • ${car.formattedMileage}',
-                                    style: const TextStyle(color: AppColors.primary, fontWeight: FontWeight.w700, fontSize: 13),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            IconButton(
-                              icon: const Icon(Icons.arrow_forward_ios_rounded, size: 16),
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (_) => CarDetailsScreen(car: car)),
-                                );
-                              },
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                  ),
+                    );
+                  },
+                ),
+              ),
+            ],
 
-            // Tab 2: Test Drive Bookings
-            bookings.isEmpty
-                ? const Center(child: Text('No test drive bookings scheduled.'))
-                : ListView.builder(
-                    padding: const EdgeInsets.all(20),
-                    itemCount: bookings.length,
-                    itemBuilder: (context, idx) {
-                      final b = bookings[idx];
-                      return Container(
-                        margin: const EdgeInsets.only(bottom: 14),
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          color: isDark ? AppColors.darkCard : Colors.white,
-                          borderRadius: BorderRadius.circular(18),
-                          border: Border.all(
-                            color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
-                          ),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                CustomImage(
-                                  imageUrl: b.carImage,
-                                  width: 60,
-                                  height: 45,
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                const SizedBox(width: 12),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        b.carTitle,
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
-                                      ),
-                                      const SizedBox(height: 2),
-                                      Text(
-                                        '${b.date} • ${b.timeSlot}',
-                                        style: const TextStyle(color: AppColors.primary, fontWeight: FontWeight.w700, fontSize: 12),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                                  decoration: BoxDecoration(
-                                    color: AppColors.success.withOpacity(0.15),
-                                    borderRadius: BorderRadius.circular(6),
-                                  ),
-                                  child: Text(
-                                    b.status.toUpperCase(),
-                                    style: const TextStyle(color: AppColors.success, fontSize: 10, fontWeight: FontWeight.bold),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 10),
-                            Divider(color: isDark ? AppColors.darkBorder : AppColors.lightBorder, height: 1),
-                            const SizedBox(height: 8),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text('Location Type: ${b.locationType}', style: const TextStyle(fontSize: 11, color: Colors.grey)),
-                                Text('Contact: ${b.contactPhone}', style: const TextStyle(fontSize: 11, color: Colors.grey)),
-                              ],
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                  ),
+            const SizedBox(height: 40),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildStatBox(String count, String label, IconData icon, bool isDark) {
+  Widget _buildRoleTab(String id, String label, IconData icon, bool isDark) {
+    final isSelected = _selectedRole == id;
+
     return Expanded(
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 14),
-        decoration: BoxDecoration(
-          color: isDark ? AppColors.darkCard : Colors.white,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(
-            color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+      child: GestureDetector(
+        onTap: () => setState(() => _selectedRole = id),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          decoration: BoxDecoration(
+            color: isSelected
+                ? (isDark ? AppColors.charcoalDark : Colors.white)
+                : Colors.transparent,
+            borderRadius: BorderRadius.circular(12),
+            border: isSelected ? Border.all(color: AppColors.primaryAmber, width: 1.2) : null,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                icon,
+                size: 16,
+                color: isSelected ? AppColors.primaryAmber : AppColors.textDarkMuted,
+              ),
+              const SizedBox(height: 4),
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 10.5,
+                  fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
+                  color: isSelected
+                      ? (isDark ? Colors.white : AppColors.textDarkPrimary)
+                      : AppColors.textDarkMuted,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
           ),
         ),
-        child: Column(
-          children: [
-            Icon(icon, color: AppColors.primary, size: 20),
-            const SizedBox(height: 6),
-            Text(
-              count,
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w900),
-            ),
-            const SizedBox(height: 2),
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: 11,
-                color: isDark ? AppColors.darkTextMuted : AppColors.lightTextMuted,
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }
-}
 
-class _TabBarDelegate extends SliverPersistentHeaderDelegate {
-  final TabBar tabBar;
-  final Color backgroundColor;
-
-  _TabBarDelegate(this.tabBar, {required this.backgroundColor});
-
-  @override
-  double get minExtent => tabBar.preferredSize.height;
-
-  @override
-  double get maxExtent => tabBar.preferredSize.height;
-
-  @override
-  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
-    return Container(
-      color: backgroundColor,
-      child: tabBar,
+  Widget _buildSectionHeader(String title, bool isDark) {
+    return Text(
+      title,
+      style: TextStyle(
+        fontSize: 15,
+        fontWeight: FontWeight.w800,
+        color: isDark ? Colors.white : AppColors.textDarkPrimary,
+      ),
     );
   }
 
-  @override
-  bool shouldRebuild(_TabBarDelegate oldDelegate) {
-    return false;
+  Widget _buildKpiCard(String title, String val, String subtitle, IconData icon, bool isDark) {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: isDark ? AppColors.charcoalCard : Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: isDark ? AppColors.charcoalBorder : AppColors.cashmereBorder),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(title, style: const TextStyle(fontSize: 11, color: AppColors.textDarkMuted, fontWeight: FontWeight.w700)),
+              Icon(icon, size: 16, color: AppColors.primaryAmber),
+            ],
+          ),
+          const SizedBox(height: 4),
+          Text(
+            val,
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w900,
+              color: isDark ? Colors.white : AppColors.textDarkPrimary,
+            ),
+          ),
+          const SizedBox(height: 2),
+          Text(subtitle, style: const TextStyle(fontSize: 10, color: AppColors.textDarkMuted)),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTaxLine(String label, String value, bool isDark, {bool isHighlight = false}) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: 12.5,
+            fontWeight: isHighlight ? FontWeight.w700 : FontWeight.w500,
+            color: isDark ? Colors.white70 : AppColors.textDarkSecondary,
+          ),
+        ),
+        Text(
+          value,
+          style: TextStyle(
+            fontSize: 13,
+            fontWeight: FontWeight.w800,
+            color: isHighlight
+                ? AppColors.primaryAmber
+                : (isDark ? Colors.white : AppColors.textDarkPrimary),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSettingsTile(IconData icon, String title, String subtitle, VoidCallback onTap, bool isDark) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 10),
+      decoration: BoxDecoration(
+        color: isDark ? AppColors.charcoalCard : Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: isDark ? AppColors.charcoalBorder : AppColors.cashmereBorder),
+      ),
+      child: ListTile(
+        onTap: onTap,
+        leading: Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: AppColors.primaryAmber.withOpacity(0.12),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Icon(icon, color: AppColors.primaryAmber, size: 20),
+        ),
+        title: Text(
+          title,
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w700,
+            color: isDark ? Colors.white : AppColors.textDarkPrimary,
+          ),
+        ),
+        subtitle: Text(
+          subtitle,
+          style: const TextStyle(fontSize: 11.5, color: AppColors.textDarkMuted),
+        ),
+        trailing: const Icon(Icons.arrow_forward_ios_rounded, size: 14, color: AppColors.textDarkMuted),
+      ),
+    );
   }
 }

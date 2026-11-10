@@ -75,7 +75,6 @@ class PropertyCard extends StatelessWidget {
                           ? AppColors.obsidianBlack.withOpacity(0.85)
                           : AppColors.primaryAmber.withOpacity(0.92),
                       borderRadius: BorderRadius.circular(8),
-                      backdropFilter: const ColorFilter.mode(Colors.black, BlendMode.dst),
                     ),
                     child: Text(
                       property.listingType == ListingType.forSale ? 'FOR SALE' : 'FOR RENT',

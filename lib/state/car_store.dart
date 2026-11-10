@@ -305,14 +305,20 @@ class CarStore extends ChangeNotifier {
     notifyListeners();
   }
 
-  void addAutomatedReply({required String carId, required String message, required String senderName}) {
+  void addAutomatedReply({
+    required String carId,
+    String? message,
+    String? reply,
+    String? senderName,
+    Seller? seller,
+  }) {
     _messages.add(
       ChatMessage(
         id: 'reply-${DateTime.now().millisecondsSinceEpoch}',
         carId: carId,
         senderId: 'agent',
-        senderName: senderName,
-        message: message,
+        senderName: seller?.name ?? senderName ?? 'Verified Agent',
+        message: reply ?? message ?? 'Thank you for your inquiry!',
         timestamp: DateTime.now(),
         isFromMe: false,
       ),
@@ -320,12 +326,39 @@ class CarStore extends ChangeNotifier {
     notifyListeners();
   }
 
-  void makeOffer({required String carId, required double offerAmount, required String note}) {
+  void makeOffer({
+    String? carId,
+    Car? car,
+    required double offerAmount,
+    required String note,
+  }) {
     notifyListeners();
   }
 
-  void bookTestDrive(TestDriveBooking booking) {
-    _bookings.add(booking);
+  void bookTestDrive({
+    Car? car,
+    DateTime? date,
+    String? timeSlot,
+    String? locationType,
+    String? name,
+    String? phone,
+    TestDriveBooking? booking,
+  }) {
+    if (booking != null) {
+      _bookings.add(booking);
+    } else if (car != null) {
+      _bookings.add(
+        TestDriveBooking(
+          id: 'bk-${DateTime.now().millisecondsSinceEpoch}',
+          car: car,
+          date: date ?? DateTime.now(),
+          timeSlot: timeSlot ?? '10:00 AM',
+          locationType: locationType ?? 'Showroom',
+          userName: name ?? 'Customer',
+          userPhone: phone ?? '',
+        ),
+      );
+    }
     notifyListeners();
   }
 

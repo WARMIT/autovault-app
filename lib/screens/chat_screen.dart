@@ -383,20 +383,3 @@ class _ChatScreenState extends State<ChatScreen> {
     );
   }
 }
-
-extension CarStoreReply on CarStore {
-  void addAutomatedReply({required String carId, required Seller seller, required String reply}) {
-    messages.add(
-      ChatMessage(
-        id: 'reply-${DateTime.now().millisecondsSinceEpoch}',
-        carId: carId,
-        senderId: seller.id,
-        senderName: seller.name,
-        message: reply,
-        timestamp: DateTime.now(),
-        isFromMe: false,
-      ),
-    );
-    notifyListeners();
-  }
-}

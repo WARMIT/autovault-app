@@ -337,7 +337,7 @@ class CarStore extends ChangeNotifier {
 
   void bookTestDrive({
     Car? car,
-    DateTime? date,
+    dynamic date,
     String? timeSlot,
     String? locationType,
     String? name,
@@ -350,12 +350,14 @@ class CarStore extends ChangeNotifier {
       _bookings.add(
         TestDriveBooking(
           id: 'bk-${DateTime.now().millisecondsSinceEpoch}',
-          car: car,
-          date: date ?? DateTime.now(),
+          carId: car.id,
+          carTitle: car.title,
+          carImage: car.primaryImage,
+          date: date?.toString() ?? 'Today',
           timeSlot: timeSlot ?? '10:00 AM',
           locationType: locationType ?? 'Showroom',
-          userName: name ?? 'Customer',
-          userPhone: phone ?? '',
+          contactName: name ?? 'Customer',
+          contactPhone: phone ?? '',
         ),
       );
     }

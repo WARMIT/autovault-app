@@ -73,4 +73,34 @@ class AppColors {
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
+
+  // --- Backwards Compatibility Aliases ---
+  static const Color primary = primaryAmber;
+  static const Color primaryLight = primaryAmberLight;
+  static const Color primaryDark = primaryAmberDark;
+  static const Color darkBackground = obsidianBlack;
+  static const Color darkSurface = charcoalDark;
+  static const Color darkCard = charcoalCard;
+  static const Color darkCardElevated = charcoalCard;
+  static const Color darkBorder = charcoalBorder;
+  static const Color darkTextPrimary = textLightPrimary;
+  static const Color darkTextSecondary = textLightSecondary;
+  static const Color darkTextMuted = textLightMuted;
+
+  static const Color lightBackground = cashmereBg;
+  static const Color lightSurface = cashmereSurface;
+  static const Color lightCard = cashmereSurface;
+  static const Color lightCardElevated = cashmereElevated;
+  static const Color lightBorder = cashmereBorder;
+  static const Color lightTextPrimary = textDarkPrimary;
+  static const Color lightTextSecondary = textDarkSecondary;
+  static const Color lightTextMuted = textDarkMuted;
+
+  static const Color success = verifiedGreen;
+  static const Color successLight = verifiedGreenLight;
+  static const Color warning = alertWarning;
+  static const Color error = errorRed;
+  static const Color accentGold = verifiedGold;
+  static const Color accentCyan = telebirrBlue;
+  static const LinearGradient primaryGradient = amberGradient;
 }
